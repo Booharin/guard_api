@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/normalize.css">
+  <link rel="stylesheet" href="/css/DirectionsStyle.css">
+  <link rel="stylesheet" href="/css/jquery.modal.min.css">
+  <title>Направления</title>
+</head>
+<body>
+  <header class="header">
+    <div class="logo">
+      <a href="Directions">
+        <img src="/img/logo.svg" alt="logo" class="logo-icon">
+      </a>
+      <div class="logo-text">
+        <h1>guard</h1>
+        <p>Legal assistant</p>
+      </div>
+    </div>
+    <!-- /.logo -->
+    <div class="buttons">
+      <a class="category-button" href="Lawyers">Юристы</a>
+      <a class="category-button" href="Clients">Клиенты</a>
+    </div>
+    <div class="user-info">
+      <h3 class="user-name">
+        UserName
+      </h3>
+      <div class="user">
+        <div class="user-links">
+          <a href="index" class="exit" onclick="exit()">
+            Выйти
+          </a>
+          <a href="PersonalCabinet" class="personal-cabinet-link">
+            Личный кабинет
+          </a>
+        </div>
+      </div>
+    </div>
+    <!-- ./user -->
+  </header>
+  <main class="main">
+    <div class="laws">
+    </div>
+    <!-- /.laws -->
+      <div id="subIssuesBlock" class="lists">
+        <ul class="law-list criminal">
+          <li><a href="#newSubDir"><span class="plus">+</span></a>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <p class="category-description">Описание направления:</p>
+        <p id="issueDescription" class="category-description"></p>
+      </div>
+      <div>
+        <p class="category-description">Описание поднаправления</p>
+        <p id="subIssueDescription" class="category-description"></p>
+      </div>
+  </main>
+  <!-- /main -->
+  <!-- модальные окна -->
+  <!-- для добавления нового нaправления -->
+  <div id="newDir" class="modal">
+      <div class="modal-header">
+        <h1 class="modal-title">
+          Новое направление
+        </h1>
+      </div>
+      <div class="modal-main">
+        <form class="modal-form" onsubmit="return false">
+          <p class="modal-text">
+            Введите данные направления
+          </p>
+          <input type="text" class="modal-input" placeholder="Название" name="name-ru">
+          <input type="text" class="modal-input" placeholder="Локаль" name="locale">
+          <textarea name="description-ru" placeholder="Описание" class="modal-input"></textarea>
+          <p class="modal-text">
+            Добавьте код направления
+          </p>
+          <input type="text" class="modal-input" placeholder="issueCode" name="issueCode">
+          <button id="saveIssue" class="modal-button" type="submit">Сохранить</button>
+        </form>
+      </div>
+  </div>
+  <!-- для добавления поднаправления -->
+  <div id="newSubDir" class="modal">
+    <div class="modal-header">
+      <h1 class="modal-title">
+        Новое поднаправление
+      </h1>
+    </div>
+    <div class="modal-main">
+      <form class="modal-form" onsubmit="return false">
+        <p class="modal-text">
+          Введите название поднаправления
+        </p>
+        <input type="text" class="modal-input" placeholder="Название" name="name-ru">
+        <p class="modal-text">Добавьте описание</p>
+        <textarea name="description-ru" placeholder="Описание" class="modal-input"></textarea>
+        <p class="modal-text">
+          Добавьте код поднаправления
+        </p>
+        <input type="text" class="modal-input" placeholder="subIssueCode" name="subIssueCode">
+        <button id="saveSubIssue" class="modal-button" type="submit">Сохранить</button>
+      </form>
+    </div>
+  </div>
+  <!-- для изменения поднаправления -->
+  <div id="editSubDir" class="modal">
+    <div class="modal-header">
+      <h1 class="modal-title">
+        Название изменяемого поднаправления
+      </h1>
+    </div>
+    <div class="modal-main">
+      <form id="editSubIssueForm" class="modal-form" onsubmit="return false">
+        <p class="modal-text">
+          Измените название поднаправления
+        </p>
+        <input type="text" class="modal-input" placeholder="Название" name="name-ru">
+        <p class="modal-text">
+          Измените описание
+        </p>
+        <textarea name="description-ru" placeholder="Описание" class="modal-input"></textarea>
+        <p class="modal-text">
+          Измените код поднаправления
+        </p>
+        <input type="text" class="modal-input" placeholder="subIssueCode" name="subIssueCode">
+        <button id="editSubIssue" class="modal-button" type="submit">Сохранить </button>
+      </form>
+    </div>
+  </div>
+  <!-- для изменения направления -->
+  <div id="editDir" class="modal">
+    <div class="modal-header">
+      <h1 class="modal-title">
+        Название изменяемого направления
+      </h1>
+    </div>
+    <div class="modal-main">
+      <form id="editIssueForm" class="modal-form" onsubmit="return false">
+        <p class="modal-text">
+          Измените название направления
+        </p>
+        <input type="text" class="modal-input" placeholder="Название" name="name-ru">
+        <p class="modal-text">
+          Измените описание направления
+        </p>
+        <textarea name="description-ru" placeholder="Описание" class="modal-input"></textarea>
+        <p class="modal-text">
+          Измените локаль направления
+        </p>
+        <input type="text" class="modal-input" placeholder="Локаль" name="locale">
+        <p class="modal-text">
+          Измените код направления
+        </p>
+        <input type="text" class="modal-input" placeholder="issueCode" name="issueCode">
+        <button id="editIssue" class="modal-button" type="submit">Сохранить</button>
+      </form>
+    </div>
+</div>
+  <script src="/js/common.js"></script>
+  <script src="/js/Directions.js"></script>
+  <script src="/js/jquery-3.5.1.min.js"></script>
+  <script src="/js/jquery.modal.min.js"></script>
+</body>
+</html>

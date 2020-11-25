@@ -1,0 +1,227 @@
+body {
+  font-family: sans-serif;
+  background-color: whitesmoke;
+}
+.header {
+  width: 100%;
+  background-color: #a7a7a7;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+}
+.logo img {
+  width: 76px;
+  height: 76px;
+}
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  margin-left: 20px;
+  color: #394165;
+}
+.logo-text h1 {
+  margin: 0;
+  text-transform: uppercase;
+}
+.logo-text p {
+  margin: 0;
+}
+.user {
+  width: 57px;
+  height: 57px;
+  background: transparent url(../img/user.svg) no-repeat center/cover;
+  margin-right: 20px;
+}
+.categories {
+  margin-right: auto;
+  margin-left: 100px;
+}
+.category-button {
+  text-align: center;
+  width: 150px;
+  display: inline-block;
+  padding: 15px 0;
+  background-color: #c4c4c4;
+  border: none;
+  outline: none;
+  margin-right: 20px;
+  border-radius: 10px;
+  color: #394165;
+  font-weight: 600;
+  font-family: sans-serif;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+  text-decoration: none;
+}
+.category-button.is-active {
+  color: whitesmoke;
+  background-color: #394165;
+}
+.category-button:hover {
+  color: whitesmoke;
+  background-color: #394165;
+}
+
+.main {
+  padding-top: 60px;
+  width: 95%;
+  margin: 0 auto;
+  background-color: whitesmoke;
+  display: flex;
+  padding-bottom: 60px;
+}
+.table {
+  display: block;
+  color: black;
+  font-weight: normal;
+  font-size: 15px;
+  width: 100%;
+}
+
+table {
+  width: 100%;
+}
+
+.table-title100 {
+  width: 100px;
+  border-bottom: 1px solid #000;
+  padding: 5px;
+}
+.table-title50 {
+  width: 50px;
+  border-bottom: 1px solid #000;
+  padding: 5px;
+}
+td {
+  text-align: center;
+  padding: 5px;
+}
+tr:nth-child(2n) {
+  background-color: lightgrey;
+}
+.edit-rating {
+  width: 15px;
+  height: 15px;
+  margin-left: 10px;
+  transition: all 0.3s ease-in-out;
+}
+.edit-rating:hover {
+  width: 20px;
+  height: 20px;
+  z-index: 999;
+  fill: #394165;
+}
+
+/* стили для информации о пользователе */
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+.user-name {
+  margin-right: 20px;
+}
+.user {
+  width: 57px;
+  height: 57px;
+  background: transparent url(../img/user.svg) no-repeat center/cover;
+  margin-right: 20px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+.user-name {
+  color: #394165;
+}
+.user:hover .user-links {
+  display: flex;
+}
+.user-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: absolute;
+  bottom: -85px;
+  left: -50px;
+  background-color: #394165;
+  padding: 10px;
+  border-radius: 10px;
+  display: none;
+  transition: all 0.3s ease-in-out;
+}
+.exit {
+  color: white;
+  margin-bottom: 10px;
+  text-decoration: none;
+}
+.personal-cabinet-link {
+  color: white;
+  text-decoration: none;
+}
+
+/* стили модального окна */
+.modal-header {
+  width: 50%;
+  background-color: #394165;
+  padding: 20px 0;
+  z-index: 99;
+  color: whitesmoke;
+  margin-bottom: 50px;
+  padding-left: 20px;
+}
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+}
+.modal-title {
+  margin: 0;
+}
+.modal-text {
+  padding-left: 20px;
+  color: #394165;
+  margin: 0;
+}
+.modal-input {
+  margin-bottom: 20px;
+  width: 50%;
+  border: none;
+  outline: none;
+  background-color: #f8f8f8;
+  padding: 10px 0;
+margin-left: 20px;  color: black;
+}
+.modal-button {
+  text-align: center;
+  width: 150px;
+  display: block;
+  padding: 15px 0;
+  background-color: whitesmoke;
+  border: none;
+  outline: none;
+  border-radius: 10px;
+  color: #394165;
+  font-weight: 600;
+  font-family: sans-serif;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+  text-decoration: none;
+  margin-bottom: 20px;
+  margin-left: 20px;
+}
+.modal-button:hover {
+  color: whitesmoke;
+  background-color: #394165;
+}

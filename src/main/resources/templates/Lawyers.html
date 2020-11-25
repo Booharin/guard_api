@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/normalize.css">
+  <link rel="stylesheet" href="/css/LawyersStyle.css">
+  <link rel="stylesheet" href="/css/jquery.modal.min.css">
+  <title>Юристы и клиенты</title>
+</head>
+<body>
+  <header class="header">
+    <div class="logo">
+      <a href="Directions">
+        <img src="/img/logo.svg" alt="logo" class="logo-icon">
+      </a>
+      <div class="logo-text">
+        <h1>guard</h1>
+        <p>Legal assistant</p>
+      </div>
+    </div>
+    <!-- /.logo -->
+    <div class="categories">
+        <a href="Lawyers" class="category-button is-active">Юристы</a>
+        <a href="Clients" class="category-button">Клиенты</a>
+    </div>
+    <div class="FirstScreen">
+    </div>
+    <div class="user-info">
+      <h3 class="user-name">
+        UserName
+      </h3>
+      <div class="user">
+        <div class="user-links">
+          <a href="index" class="exit" onclick="exit()">
+            Выйти
+          </a>
+          <a href="PersonalCabinet" class="personal-cabinet-link">
+            Личный кабинет
+          </a>
+        </div>
+      </div>
+    </div>
+    <!-- ./user -->
+  </header>
+  <main class="main">
+    <div class="table lawyers">
+      <table id="lawyerTable">
+        <tr class="table-titles">
+          <th class="table-title100">id</th>
+          <th class="table-title100">Имя</th>
+          <th class="table-title100">Фамилия</th>
+          <th class="table-title100">Почта</th>
+          <th class="table-title100">Телефон</th>
+          <th class="table-title50">Код страны</th>
+          <th class="table-title50">Код города</th>
+          <th class="table-title50">Рейтинг</th>
+        </tr>
+      </table>
+    </div>
+  </main>
+  <!-- модальное оокно изменения рейтинга юриста -->
+  <div id="editLaw" class="modal">
+    <div class="modal-header">
+      <h1 class="modal-title">Редактирование юриста</h1>
+    </div>
+      <form action="#" class="modal-form">
+        <p class="modal-text">Имя </p>
+        <input type="text" id="law-name" class="modal-input">
+        <p class="modal-text">Фамилия </p>
+        <input type="text" id="law-surname" class="modal-input">
+        <p class="modal-text">E-mail</p>
+        <input type="text" id="law-email" class="modal-input">
+        <p class="modal-text">Телефон</p>
+        <input type="text" id="law-telephone" class="modal-input">
+        <p class="modal-text">Код страны</p>
+        <input type="text" id="law-code-country" class="modal-input">
+        <p class="modal-text">Код города</p>
+        <input type="text" id="law-code-city" class="modal-input">
+        <p class="modal-text">Рейтинг</p>
+        <input type="text" id="law-rating" class="modal-input">
+
+        <button id = "saveButton" class="modal-button" type="submit" >Сохранить </button>
+      </form>
+  </div>
+  <script src="/js/common.js"></script>
+  <script src="/js/laywers.js"></script>
+  <script src="/js/jquery-3.5.1.min.js"></script>
+  <script src="/js/jquery.modal.min.js"></script>
+</body>
+</html>
