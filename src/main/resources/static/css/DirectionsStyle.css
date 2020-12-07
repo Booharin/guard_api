@@ -5,6 +5,10 @@ body {
 a {
   text-decoration: none;
 }
+
+.some {
+  float: left;
+}
 .header {
   width: 100%;
   background-color: #a7a7a7;
@@ -196,7 +200,7 @@ border-color: white;
 }
 .category-description {
   margin-left: 40px;
-  margin-top: 0;
+  margin-top: 20px;
   font-size: 20px;
   line-height: 25px;
 }

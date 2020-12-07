@@ -15,6 +15,7 @@ public class UserProfileDto {
     protected String email;
     protected String phoneNumber;
     protected String photo;
+    protected String role;
     protected Double averageRate;
     private Timestamp dateCreated;
     protected List<Review> reviewList;
@@ -29,11 +30,20 @@ public class UserProfileDto {
         this.email = user.getEmail();
         this.phoneNumber = user.getPhoneNumber();
         this.photo = user.getPhoto();
+        this.role = user.getRole();
         this.averageRate = user.getAverageRate();
         this.dateCreated = user.getDateCreated();
     }
     
     public UserProfileDto() {}
+    
+    public String getRole() {
+        return role;
+    }
+    
+    public void setRole(String role) {
+        this.role = role;
+    }
     
     public List<Integer> getCityCode() {
         return cityCode;

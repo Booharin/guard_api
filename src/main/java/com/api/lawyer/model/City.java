@@ -8,18 +8,28 @@ public class City {
     @Id
     private Integer cityCode;
     private String title;
+    private String titleEn;
     private Integer countryCode;
     
     public City() {}
     
-    public City(Integer cityCode, String title, Integer countryCode){
+    public City(Integer cityCode, String title, Integer countryCode, String titleEn){
         this.cityCode = cityCode;
         this.title = title;
+        this.titleEn = titleEn;
         this.countryCode = countryCode;
     }
 
     public Integer getCityCode() {
         return cityCode;
+    }
+
+    public String getTitleEn() {
+        return titleEn;
+    }
+
+    public void setTitleEn(String titleEn) {
+        this.titleEn = titleEn;
     }
 
     public void setCityCode(Integer cityCode) {

@@ -11,7 +11,7 @@
 <body>
   <header class="header">
     <div class="logo">
-      <a href="Directions">
+      <a id="hrefDirections">
         <img src="/img/logo.svg" alt="logo" class="logo-icon">
       </a>
       <div class="logo-text">
@@ -21,8 +21,9 @@
     </div>
     <!-- /.logo -->
     <div class="buttons">
-      <a class="category-button" href="Lawyers">Юристы</a>
-      <a class="category-button" href="Clients">Клиенты</a>
+      <a id="hrefLawyers" class="category-button is-active">Юристы</a>
+      <a id="hrefClients" class="category-button">Клиенты</a>
+    </div>
     </div>
     <div class="user-info">
       <h3 class="user-name">
@@ -33,7 +34,7 @@
           <a href="index" class="exit" onclick="exit()">
             Выйти
           </a>
-          <a href="PersonalCabinet" class="personal-cabinet-link">
+          <a id="hrefPersonalCabinet" class="personal-cabinet-link">
             Личный кабинет
           </a>
         </div>
@@ -52,12 +53,24 @@
         </ul>
       </div>
       <div>
-        <p class="category-description">Описание направления:</p>
-        <p id="issueDescription" class="category-description"></p>
+        <div>
+          <p class="category-description">Описание направления:</p>
+          <p id="issueDescription" class="category-description"></p>
+        </div>
+        <div>
+          <p class="category-description">Issue description:</p>
+          <p id="issueDescriptionEn" class="category-description"></p>
+        </div>
       </div>
       <div>
-        <p class="category-description">Описание поднаправления</p>
-        <p id="subIssueDescription" class="category-description"></p>
+        <div>
+          <p class="category-description">Описание поднаправления:</p>
+          <p id="subIssueDescription" class="category-description"></p>
+        </div>
+        <div>
+          <p class="category-description">SubIssue description:</p>
+          <p id="subIssueDescriptionEn" class="category-description"></p>
+        </div>
       </div>
   </main>
   <!-- /main -->
@@ -74,9 +87,10 @@
           <p class="modal-text">
             Введите данные направления
           </p>
-          <input type="text" class="modal-input" placeholder="Название" name="name-ru">
-          <input type="text" class="modal-input" placeholder="Локаль" name="locale">
-          <textarea name="description-ru" placeholder="Описание" class="modal-input"></textarea>
+          <input type="text" class="modal-input" placeholder="Название на русском" name="name-ru">
+          <input type="text" class="modal-input" placeholder="Название на английском" name="name-ru">
+          <textarea name="description-ru" placeholder="Описание на русском" class="modal-input"></textarea>
+          <textarea name="description-ru" placeholder="Описание на английском" class="modal-input"></textarea>
           <p class="modal-text">
             Добавьте код направления
           </p>
@@ -97,9 +111,11 @@
         <p class="modal-text">
           Введите название поднаправления
         </p>
-        <input type="text" class="modal-input" placeholder="Название" name="name-ru">
+        <input type="text" class="modal-input" placeholder="Название на русском" name="name-ru">
+        <input type="text" class="modal-input" placeholder="Название на английском" name="name-ru">
         <p class="modal-text">Добавьте описание</p>
-        <textarea name="description-ru" placeholder="Описание" class="modal-input"></textarea>
+        <textarea name="description-ru" placeholder="Описание на русском" class="modal-input"></textarea>
+        <textarea name="description-ru" placeholder="Описание на английском" class="modal-input"></textarea>
         <p class="modal-text">
           Добавьте код поднаправления
         </p>
@@ -118,18 +134,27 @@
     <div class="modal-main">
       <form id="editSubIssueForm" class="modal-form" onsubmit="return false">
         <p class="modal-text">
-          Измените название поднаправления
+          Измените название поднаправления на русском
         </p>
-        <input type="text" class="modal-input" placeholder="Название" name="name-ru">
+        <input type="text" class="modal-input" placeholder="Название на русском" name="name-ru">
         <p class="modal-text">
-          Измените описание
+          Измените название поднаправления на английском
         </p>
-        <textarea name="description-ru" placeholder="Описание" class="modal-input"></textarea>
+        <input type="text" class="modal-input" placeholder="Название на английском" name="name-en">
+        <p class="modal-text">
+          Измените описание поднаправления на русском
+        </p>
+        <textarea name="description-ru" placeholder="Описание на русском" class="modal-input"></textarea>
+        <p class="modal-text">
+          Измените описание поднаправления на английском
+        </p>
+        <textarea name="description-en" placeholder="Описание на английском" class="modal-input"></textarea>
         <p class="modal-text">
           Измените код поднаправления
         </p>
         <input type="text" class="modal-input" placeholder="subIssueCode" name="subIssueCode">
         <button id="editSubIssue" class="modal-button" type="submit">Сохранить </button>
+        <button id="deleteSubIssue" class="modal-button" type="submit">Удалить</button>
       </form>
     </div>
   </div>
@@ -143,13 +168,21 @@
     <div class="modal-main">
       <form id="editIssueForm" class="modal-form" onsubmit="return false">
         <p class="modal-text">
-          Измените название направления
+          Измените название направления на русском
         </p>
-        <input type="text" class="modal-input" placeholder="Название" name="name-ru">
+        <input type="text" class="modal-input" placeholder="Название на русском" name="name-ru">
         <p class="modal-text">
-          Измените описание направления
+          Измените название направления на английском
         </p>
-        <textarea name="description-ru" placeholder="Описание" class="modal-input"></textarea>
+        <input type="text" class="modal-input" placeholder="Название на английском" name="name-en">
+        <p class="modal-text">
+          Измените описание направления на русском
+        </p>
+        <textarea name="description-ru" placeholder="Описание на русском" class="modal-input"></textarea>
+        <p class="modal-text">
+          Измените описание направления на английском
+        </p>
+        <textarea name="description-en" placeholder="Описание на английском" class="modal-input"></textarea>
         <p class="modal-text">
           Измените локаль направления
         </p>
@@ -159,12 +192,14 @@
         </p>
         <input type="text" class="modal-input" placeholder="issueCode" name="issueCode">
         <button id="editIssue" class="modal-button" type="submit">Сохранить</button>
+        <button id="deleteIssue" class="modal-button" type="submit">Удалить</button>
       </form>
     </div>
 </div>
-  <script src="/js/common.js"></script>
-  <script src="/js/Directions.js"></script>
   <script src="/js/jquery-3.5.1.min.js"></script>
   <script src="/js/jquery.modal.min.js"></script>
+  <script src="/js/common.js"></script>
+  <script src="/js/pageListeners.js"></script>
+  <script src="/js/Directions.js"></script>
 </body>
 </html>

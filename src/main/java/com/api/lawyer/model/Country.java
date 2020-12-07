@@ -10,12 +10,14 @@ public class Country {
     @Id
     private Integer countryCode;
     private String title;
+    private String titleEn;
     private String locale;
 
     public Country() {}
     
-    public Country(Integer countryCode, String title, String locale){
+    public Country(Integer countryCode, String title, String locale, String titleEn){
         this.countryCode = countryCode;
+        this.titleEn = titleEn;
         this.title = title;
         this.locale = locale;
     }
@@ -26,6 +28,14 @@ public class Country {
 
     public void setCountryCode(Integer countryCode) {
         this.countryCode = countryCode;
+    }
+
+    public String getTitleEn() {
+        return titleEn;
+    }
+
+    public void setTitleEn(String titleEn) {
+        this.titleEn = titleEn;
     }
 
     public String getTitle() {
@@ -49,6 +59,7 @@ public class Country {
         return "Country{" +
                 "countryCode=" + countryCode +
                 ", title='" + title + '\'' +
+                ", titleEn='" + titleEn + '\'' +
                 ", locale='" + locale + '\'' +
                 '}';
     }

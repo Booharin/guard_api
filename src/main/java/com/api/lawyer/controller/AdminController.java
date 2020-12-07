@@ -68,13 +68,16 @@ public class AdminController {
 
     
     @PostMapping("country")
-    public void saveCountry(@RequestParam String countryTitle, @RequestParam Integer countryCode, @RequestParam String locale) {
-        Optional<Country> countryOptional = countryRepository.findCountryByTitle(countryTitle);
+    public void saveCountry(@RequestParam String countryTitleRu,
+                            @RequestParam Integer countryCode,
+                            @RequestParam String locale,
+                            @RequestParam String countryTitleEn) {
+        Optional<Country> countryOptional = countryRepository.findCountryByTitle(countryTitleRu);
         if (countryOptional.isPresent())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Country with same title already exist", null);
         if (countryRepository.existsById(countryCode))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Country with same country code already exist");
-        Country country = new Country(countryCode, countryTitle, locale);
+        Country country = new Country(countryCode, countryTitleRu, locale, countryTitleEn);
         countryRepository.save(country);
     }
 
@@ -94,7 +97,14 @@ public class AdminController {
                 .collect(Collectors.toList());
         lawyers.forEach(it -> {
             it.setCityCode(userCityRepository.findAllByUserId(it.getId()).stream().map(UserCity::getCityCode).collect(Collectors.toList()));
-            it.setCountryCode(it.getCityCode().stream().map(cityRepository::findCityByCityCode).map(City::getCountryCode).collect(Collectors.toList()));
+            it.setCountryCode(it
+                    .getCityCode()
+                    .stream()
+                    .map(cityRepository::findOptionalCityByCode)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .map(City::getCountryCode)
+                    .collect(Collectors.toList()));
         });
         Map<String, List<UserProfileDto>> resultMap = new HashMap<>();
         resultMap.put("lawyers", lawyers);
@@ -116,21 +126,48 @@ public class AdminController {
                 .collect(Collectors.toList());
         clients.forEach(it -> {
             it.setCityCode(userCityRepository.findAllByUserId(it.getId()).stream().map(UserCity::getCityCode).collect(Collectors.toList()));
-            it.setCountryCode(it.getCityCode().stream().map(cityRepository::findCityByCityCode).map(City::getCountryCode).collect(Collectors.toList()));
+            it.setCountryCode(it
+                    .getCityCode()
+                    .stream()
+                    .map(cityRepository::findOptionalCityByCode)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .map(City::getCountryCode)
+                    .collect(Collectors.toList()));
         });
         Map<String, List<UserProfileDto>> resultMap = new HashMap<>();
         resultMap.put("clients", clients);
         return resultMap;
     }
 
+    @PostMapping("deleteCity")
+    public void deleteCity(@RequestParam String cityName) {
+        Optional<City> city = cityRepository.findCityByTitle(cityName);
+        city.ifPresent(cityRepository::delete);
+    }
+
+
+    @PostMapping("deleteCountry")
+    public void deleteCountry(@RequestParam String countryName) {
+        Optional<Country> country = countryRepository.findCountryByTitle(countryName);
+        country.ifPresent(it -> {
+            List<City> list = cityRepository.findAllByCountryCode(it.getCountryCode());
+            cityRepository.deleteAll(list);
+            countryRepository.delete(it);
+        });
+    }
+
     @PostMapping("city")
-    public void saveCity(@RequestParam Integer countryCode, @RequestParam Integer cityCode, @RequestParam String cityTitle) {
-        Optional<City> cityOptional = cityRepository.findCityByTitle(cityTitle);
+    public void saveCity(@RequestParam Integer countryCode,
+                         @RequestParam Integer cityCode,
+                         @RequestParam String cityTitleRu,
+                         @RequestParam String cityTitleEn) {
+        Optional<City> cityOptional = cityRepository.findCityByTitle(cityTitleRu);
         if (cityOptional.isPresent())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "City with same title already exist");
         if (cityRepository.existsById(countryCode))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "City with same city code already exist");
-        City city = new City(cityCode, cityTitle, countryCode);
+        City city = new City(cityCode, cityTitleRu, countryCode, cityTitleEn);
         cityRepository.save(city);
     }
 
@@ -155,8 +192,7 @@ public class AdminController {
 
     @GetMapping("country")
     public List<Country> getAllCountries() {
-        List<Country> resultList = new ArrayList<>();
-        countryRepository.findAll().forEach(resultList::add);
+        List<Country> resultList = new ArrayList<>(countryRepository.findAll());
         return resultList;
     }
 

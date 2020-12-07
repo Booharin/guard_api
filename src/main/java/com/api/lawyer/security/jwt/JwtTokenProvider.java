@@ -75,15 +75,6 @@ public class JwtTokenProvider {
         if (bearerToken != null && bearerToken.startsWith("Bearer_")) {
             return bearerToken.substring(7);
         }
-        Cookie[] cookies = req.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("jwt")) {
-                    String accessToken = cookie.getValue();
-                    if (accessToken != null && !accessToken.isEmpty()) return accessToken;
-                }
-            }
-        }
         return null;
     }
 

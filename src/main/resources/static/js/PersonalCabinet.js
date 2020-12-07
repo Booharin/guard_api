@@ -1,24 +1,75 @@
-const adminList = 
+var adminList = 
 document.querySelector('.admin-list');
 
-const adminName = document.getElementsByClassName("admin-name")
+var adminName = document.getElementsByClassName("admin-name")
 
-const saveCountryButton = document.getElementById("saveCountry")
+var saveCountryButton = document.getElementById("saveCountry")
 
-const saveCityButton = document.getElementById("saveCity")
+var saveCityButton = document.getElementById("saveCity")
 
-const selectCountry = document.getElementById("country")
-const selectCity = document.getElementById("city")
-const saveAdminButton = document.getElementById("saveAdmin")
+var selectCountry = document.getElementById("country")
+var selectCity = document.getElementById("city")
+var saveAdminButton = document.getElementById("saveAdmin")
+
+var deleteCityButton = document.getElementById("delCity")
+var deleteCountryButton = document.getElementById("delCountry")
 
 var cities;
 var countries;
 
+var curCountry;
+var curCity;
+
 selectCountry.addEventListener('change', onCountryChanged)
+selectCity.addEventListener('change', onCityChanged)
 saveCountryButton.addEventListener('click', function () { saveEvent(URL + "admin/country?", false, saveCountryButton) })
 saveCityButton.addEventListener('click', function () { saveEvent(URL + "admin/city?", true, saveCityButton) })
 saveAdminButton.addEventListener('click', function() { saveAdmin(saveAdminButton) })
+deleteCityButton.addEventListener('click', function() { deleteCity() })
+deleteCountryButton.addEventListener('click', function() { deleteCountry() })
 
+
+function deleteCity() {
+  let xhr = new XMLHttpRequest();
+  let url = URL + "admin/deleteCity?cityName=" + curCity
+  xhr.open("POST", url, true);
+  xhr.setRequestHeader("Content-Type", "application/json");
+  let token = sessionStorage.getItem("token")
+  xhr.setRequestHeader("Authorization", `Bearer_${token}`)
+
+  xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        if(xhr.status === 200) {
+          alert("Deleted!")
+          getPage(URL + "admin/PersonalCabinet")
+        } else {
+          alert("Exception: " + xhr.status)
+        }
+      }
+  };
+  xhr.send();
+}
+
+function deleteCountry() {
+  let xhr = new XMLHttpRequest();
+  let url = URL + "admin/deleteCountry?countryName=" + curCountry
+  xhr.open("POST", url, true);
+  xhr.setRequestHeader("Content-Type", "application/json");
+  let token = sessionStorage.getItem("token")
+  xhr.setRequestHeader("Authorization", `Bearer_${token}`)
+
+  xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        if(xhr.status === 200) {
+          alert("Deleted!")
+          getPage(URL + "admin/PersonalCabinet")
+        } else {
+          alert("Exception: " + xhr.status)
+        }
+      }
+  };
+  xhr.send();
+}
 
 function addOptions() {
   getAllCountries()
@@ -64,13 +115,18 @@ function getAllCities() {
       if (xhr.readyState === 4 && xhr.status === 200) {
           cities = JSON.parse(xhr.responseText)
           onCountryChanged()
+          onCityChanged()
       }
   };
   xhr.send();
 }
 
+function onCityChanged() {
+  curCity = selectCity.options[selectCity.selectedIndex].value
+}
+
 function onCountryChanged() {
-  let curCountry = selectCountry.options[selectCountry.selectedIndex].value
+  curCountry = selectCountry.options[selectCountry.selectedIndex].value
 
   for (let country of countries) {
     if (country.title === curCountry) {
@@ -92,6 +148,7 @@ function onCountryChanged() {
     opt.className = 'option'
     selectCity.appendChild(opt)
   }
+  onCityChanged()
 }
 
 function setAdminName() {
@@ -147,11 +204,14 @@ function saveEvent(endpoint, isCity, button) {
     console.log(returnPreviousSiblingNTimes(button, 2))
     url += "countryCode=" + returnPreviousSiblingNTimes(button, 2) + "&cityCode=" 
         + returnPreviousSiblingNTimes(button, 6)
-        + "&cityTitle=" + returnPreviousSiblingNTimes(button, 10)
+        + "&cityTitleRu=" + returnPreviousSiblingNTimes(button, 14)
+        + "&cityTitleEn=" + returnPreviousSiblingNTimes(button, 10)
     console.log(url)
   } else {
-    url += "countryTitle=" + returnPreviousSiblingNTimes(button, 10) + "&countryCode=" 
-        + returnPreviousSiblingNTimes(button, 6) + "&locale=" + returnPreviousSiblingNTimes(button, 2)
+    url += "countryTitleRu=" + returnPreviousSiblingNTimes(button, 14) 
+            + "&countryCode=" + returnPreviousSiblingNTimes(button, 6) 
+            + "&locale=" + returnPreviousSiblingNTimes(button, 2)
+            + "&countryTitleEn=" + returnPreviousSiblingNTimes(button, 10) 
     console.log(url)
   }
   xhr.open("POST", url, true);
@@ -163,6 +223,7 @@ function saveEvent(endpoint, isCity, button) {
       if (xhr.readyState === 4) {
           if(xhr.status === 200){
               alert("Saved")
+              getPage(URL + "admin/PersonalCabinet")
           } else if (xhr.status === 409) {
               alert(JSON.parse(xhr.responseText).message)
           } else {
@@ -187,6 +248,7 @@ function saveAdmin(button) {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
                 alert("Saved")
+                getPage(URL + "admin/PersonalCabinet")
             } else if (xhr.status === 409) {
                 alert(JSON.parse(xhr.responseText).message)
             } else {

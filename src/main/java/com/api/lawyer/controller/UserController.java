@@ -31,7 +31,7 @@ public class UserController {
         this.fileStore = fileStore;
         this.userRepository = userRepository;
     }
-    
+
     /**
      *
      * @return

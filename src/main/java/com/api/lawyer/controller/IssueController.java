@@ -43,26 +43,41 @@ public class IssueController {
         Optional<IssueType> issueTypeOptional = issueRepository.findById(issueType.getId());
         issueTypeOptional.ifPresentOrElse(it -> {
             it.setIssueCode(issueType.getIssueCode());
-            it.setLocale(issueType.getLocale());
             it.setSubtitle(issueType.getSubtitle());
+            it.setSubtitleEn(issueType.getSubtitleEn());
             it.setTitle(issueType.getTitle());
+            it.setTitleEn(issueType.getTitleEn());
+            it.setLocale(issueType.getLocale());
             issueRepository.save(it);
         }, () -> {throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Issue not found");});
     }
     
     @PostMapping("/esubissue")
     public void editSubIssue(@RequestBody SubIssueType subIssueType) {
-        checkSubIssue(subIssueType);
         Optional<SubIssueType> subIssueTypeOptional = subIssueRepository.findById(subIssueType.getId());
         subIssueTypeOptional.ifPresentOrElse(it -> {
             it.setIssueCode(subIssueType.getIssueCode());
             it.setSubIssueCode(subIssueType.getSubIssueCode());
             it.setSubtitle(subIssueType.getSubtitle());
+            it.setSubtitleEn(subIssueType.getSubtitleEn());
             it.setTitle(subIssueType.getTitle());
+            it.setTitleEn(subIssueType.getTitleEn());
             subIssueRepository.save(it);
         }, () -> {throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Issue not found");});
     }
-    
+
+    @PostMapping("/deleteIssue")
+    public void deleteIssue(@RequestParam Integer id) {
+        Optional<IssueType> issue = issueRepository.findById(id);
+        issue.ifPresent(issueRepository::delete);
+    }
+
+    @PostMapping("/deleteSubIssue")
+    public void deleteSubIssue(@RequestParam Integer id) {
+        Optional<SubIssueType> subIssue = subIssueRepository.findById(id);
+        subIssue.ifPresent(subIssueRepository::delete);
+    }
+
     private void checkSubIssue(SubIssueType subIssueType) {
         if (subIssueRepository.findBySubIssueCode(subIssueType.getSubIssueCode()).isPresent())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "SubIssue with same sub issue code already exist");

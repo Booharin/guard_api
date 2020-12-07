@@ -1,20 +1,26 @@
-const saveIssueButton = document.getElementById("saveIssue")
-const saveSubIssuebutton = document.getElementById("saveSubIssue")
-const lawsDiv = document.getElementsByClassName("laws")[0]
-const subIssuesBlock = document.getElementById("subIssuesBlock")
-const descriptionIssue = document.getElementById("issueDescription")
-const descriptionSubIssue = document.getElementById("subIssueDescription")
-const editIssueButton = document.getElementById("editIssue")
-const editSubIssueButton = document.getElementById("editSubIssue")
-const editIssueForm = document.getElementById("editIssueForm")
-const editSubIssueForm = document.getElementById("editSubIssueForm")
+var saveIssueButton = document.getElementById("saveIssue")
+var saveSubIssuebutton = document.getElementById("saveSubIssue")
+var lawsDiv = document.getElementsByClassName("laws")[0]
+var subIssuesBlock = document.getElementById("subIssuesBlock")
+var descriptionIssue = document.getElementById("issueDescription")
+var descriptionSubIssue = document.getElementById("subIssueDescription")
+var descriptionIssueEn = document.getElementById("issueDescriptionEn")
+var descriptionSubIssueEn = document.getElementById("subIssueDescriptionEn")
+var editIssueButton = document.getElementById("editIssue")
+var editSubIssueButton = document.getElementById("editSubIssue")
+var editIssueForm = document.getElementById("editIssueForm")
+var editSubIssueForm = document.getElementById("editSubIssueForm")
+var deleteIssueButton = document.getElementById("deleteIssue")
+var deleteSubIssueButton = document.getElementById("deleteSubIssue")
 
 saveIssueButton.addEventListener("click", function () { saveIssue(saveIssueButton) })
 saveSubIssuebutton.addEventListener('click', function () { saveSubIssue(saveSubIssuebutton) })
 editIssueButton.addEventListener('click', function () { editIssue(editIssueButton) })
 editSubIssueButton.addEventListener('click', function () { editSubIssue(editSubIssueButton) })
-let issueMap = new Map();
-let subIssueMap = new Map();
+deleteIssueButton.addEventListener("click", deleteIssue)
+deleteSubIssueButton.addEventListener("click", deleteSubIssue)
+var issueMap = new Map();
+var subIssueMap = new Map();
 
 
 function findActiveIssue() {
@@ -42,6 +48,10 @@ function fillDir() {
                 child.innerText = findActiveIssue().subtitle
             } else if (child.name === "issueCode") {
                 child.value = findActiveIssue().issueCode
+            } else if (child.name === "name-en") {
+                child.value = findActiveIssue().titleEn
+            } else if (child.name === "description-en") {
+                child.value = findActiveIssue().subtitleEn
             }
         }
     }
@@ -57,6 +67,10 @@ function fillSubDir() {
                 child.innerText = findActiveSubIssue().subtitle
             } else if (child.name === "subIssueCode") {
                 child.value = findActiveSubIssue().subIssueCode
+            } else if (child.name === "name-en") {
+                child.value = findActiveSubIssue().titleEn
+            } else if (child.name === "description-en") {
+                child.value = findActiveSubIssue().subtitleEn
             }
         }
     }
@@ -66,7 +80,7 @@ function fillSubDir() {
 function editIssue(button) {
     // Request logic
     let xhr = new XMLHttpRequest();
-    let url = URL + "issue/eissue" // fixme
+    let url = URL + "issue/eissue"
     let token = sessionStorage.getItem("token")
 
     xhr.open("POST", url, true);
@@ -76,18 +90,21 @@ function editIssue(button) {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
                 alert("Saved")
+                getPage(URL + "admin/Directions")
             } else {
                 alert("Error")
             }
         }
     };
 
-    let issueName = returnPreviousSiblingNTimes(button, 14)
+    let issueName = returnPreviousSiblingNTimes(button, 22)
+    let issueNameEn = returnPreviousSiblingNTimes(button, 18)
     let locale = returnPreviousSiblingNTimes(button, 6)
-    let subtitle = returnPreviousSiblingNTimes(button, 10)
+    let subtitle = returnPreviousSiblingNTimes(button, 14)
+    let subtitleEn = returnPreviousSiblingNTimes(button, 10)
     let issueCode = returnPreviousSiblingNTimes(button, 2)
 
-    let data = JSON.stringify({ "title": issueName, "locale": locale, "subtitle": subtitle, "issueCode": issueCode, "id": findActiveIssue().id })
+    let data = JSON.stringify({ "title": issueName, "locale": locale, "subtitle": subtitle, "issueCode": issueCode, "id": findActiveIssue().id, "titleEn": issueNameEn, "subtitleEn": subtitleEn })
     console.log(data)
     xhr.send(data);
 }
@@ -105,18 +122,22 @@ function editSubIssue(button) {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
                 alert("Saved")
+                getPage(URL + "admin/Directions")
             } else {
                 alert("Error")
             }
         }
     };
 
-    let issueNameRu = returnPreviousSiblingNTimes(button, 10)
-    let descriptionRu = returnPreviousSiblingNTimes(button, 6)
+    let issueNameRu = returnPreviousSiblingNTimes(button, 18)
+    let issueNameEn = returnPreviousSiblingNTimes(button, 14)
+    let descriptionRu = returnPreviousSiblingNTimes(button, 10)
+    let descriptionEn = returnPreviousSiblingNTimes(button, 6)
     let subIssueCode = returnPreviousSiblingNTimes(button, 2)
     let issueCode = findActiveIssue().issueCode
 
-    let data = JSON.stringify({ "title": issueNameRu, "subtitle": descriptionRu, "issueCode": issueCode, "subIssueCode": subIssueCode, "id": findActiveSubIssue().id })
+    let data = JSON.stringify({ "title": issueNameRu, "subtitle": descriptionRu, 
+    "issueCode": issueCode, "subIssueCode": subIssueCode, "id": findActiveSubIssue().id, "titleEn": issueNameEn, "subtitleEn": descriptionEn })
     console.log(data)
     xhr.send(data);
 }
@@ -133,6 +154,7 @@ function saveIssue(button) {
       if (xhr.readyState === 4) {
           if (xhr.status === 200) {
               alert("Saved")
+              getPage(URL + "admin/Directions")
           } else if (xhr.status === 409) {
             alert(JSON.parse(xhr.responseText).message)
           } else {
@@ -141,12 +163,13 @@ function saveIssue(button) {
       }
   };
 
-    let issueName = returnPreviousSiblingNTimes(button, 10)
-    let locale = returnPreviousSiblingNTimes(button, 8)
-    let subtitle = returnPreviousSiblingNTimes(button, 6)
+    let issueNameRu = returnPreviousSiblingNTimes(button, 12)
+    let issueNameEn = returnPreviousSiblingNTimes(button, 10)
+    let subtitleRu = returnPreviousSiblingNTimes(button, 8)
+    let subtitleEn = returnPreviousSiblingNTimes(button, 6)
     let issueCode = returnPreviousSiblingNTimes(button, 2)
 
-    let data = JSON.stringify({ "title": issueName, "locale": locale, "subtitle": subtitle, "issueCode": issueCode })
+    let data = JSON.stringify({ "title": issueNameRu, "locale": sessionStorage.getItem("locale"), "subtitle": subtitleRu, "issueCode": issueCode, "titleEn": issueNameEn, "subtitleEn": subtitleEn })
     console.log(data)
     xhr.send(data);
 }
@@ -158,10 +181,12 @@ function saveSubIssue(button) {
 
   xhr.open("POST", url, true);
   xhr.setRequestHeader("Content-Type", "application/json");
+  xhr.setRequestHeader("Authorization", `Bearer_${token}`)
   xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
           if (xhr.status === 200) {
               alert("Saved")
+              getPage(URL + "admin/Directions")
           } else if (xhr.status === 409) {
             alert(JSON.parse(xhr.responseText).message)
           } else {
@@ -170,19 +195,68 @@ function saveSubIssue(button) {
       }
   };
 
-    let issueNameRu = returnPreviousSiblingNTimes(button, 10)
-    let descriptionRu = returnPreviousSiblingNTimes(button, 6)
+    let issueNameRu = returnPreviousSiblingNTimes(button, 14)
+    let issueNameEn = returnPreviousSiblingNTimes(button, 12)
+    let descriptionRu = returnPreviousSiblingNTimes(button, 8)
+    let descriptionEn = returnPreviousSiblingNTimes(button, 6)
     let subIssueCode = returnPreviousSiblingNTimes(button, 2)
     let issueCode = findActiveIssue().issueCode
 
-    let data = JSON.stringify({ "title": issueNameRu, "subtitle": descriptionRu, "issueCode": issueCode, "subIssueCode": subIssueCode })
+    let data = JSON.stringify({ "title": issueNameRu, "subtitle": descriptionRu, "issueCode": issueCode, "subIssueCode": subIssueCode, "titleEn": issueNameEn, "subtitleEn": descriptionEn })
     console.log(data)
     xhr.send(data);
+    }
+
+function deleteIssue() {
+    let xhr = new XMLHttpRequest();
+    let url = URL + "issue/deleteIssue?id=" + findActiveIssue().id
+    let token = sessionStorage.getItem("token")
+  
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Authorization", `Bearer_${token}`)
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                alert("Deleted")
+                getPage(URL + "admin/Directions")
+            } else if (xhr.status === 409) {
+              alert(JSON.parse(xhr.responseText).message)
+            } else {
+              alert("Error")
+            }
+        }
+    };
+
+    xhr.send()
+}
+
+function deleteSubIssue() {
+    let xhr = new XMLHttpRequest();
+    let url = URL + "issue/deleteSubIssue?id=" + findActiveSubIssue().id
+    let token = sessionStorage.getItem("token")
+  
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Authorization", `Bearer_${token}`)
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                alert("Deleted")
+                getPage(URL + "admin/Directions")
+            } else if (xhr.status === 409) {
+              alert(JSON.parse(xhr.responseText).message)
+            } else {
+              alert("Error")
+            }
+        }
+    };
+
+    xhr.send()
 }
 
 
 function showIssues() {
-  console.log("In issues")
   let xhr = new XMLHttpRequest();
   let url = URL + "common/issues?locale=" + sessionStorage.getItem("locale")
   let token = sessionStorage.getItem("token")
@@ -207,6 +281,7 @@ function showIssues() {
                 if (counter == 0) {
                     divNode.classList.add("is-active")
                     descriptionIssue.innerText = issue.subtitle
+                    descriptionIssueEn.innerText = issue.subtitleEn
                 }
                 divNode.setAttribute("data-tab-name", counter)
                 divNode.insertAdjacentHTML("beforeend", getIssueTemplateCode(issue.title))
@@ -234,6 +309,7 @@ function showIssues() {
                         break;
                     } else if (subIssue === issue.subIssueTypeList[0]) {
                         descriptionSubIssue.innerText = subIssue.subtitle
+                        descriptionSubIssueEn.innerText = subIssue.subtitleEn
                     }
                     ul.insertAdjacentHTML("beforeend", getSubIssueTemplate(subIssue.title, "class=\"sub-law\"", subIssue.id))
                 }
@@ -258,9 +334,9 @@ function showIssues() {
     xhr.send();
 }
 
-const plus = `<li><a href="#newSubDir" rel="modal:open" class="law-plus"><span class="plus">+</span></a></li>`
+var plus = `<li><a href="#newSubDir" rel="modal:open" class="law-plus"><span class="plus">+</span></a></li>`
 
-const plusDiv = `<a href="#newDir" rel="modal:open" class="law-plus"><span class="plus">+</span></a>`
+var plusDiv = `<a href="#newDir" rel="modal:open" class="law-plus"><span class="plus">+</span></a>`
 
 function getSubIssueTemplate(name, isActive, id) {
     return `
@@ -288,7 +364,7 @@ function returnPreviousSiblingNTimes(node, n) {
     return cur.value
 }
 
-let tabSubIssues = function () {
+var tabSubIssues = function () {
     let li = document.querySelectorAll('.sub-law');
 
     li.forEach(item => {
@@ -301,10 +377,11 @@ let tabSubIssues = function () {
         });
         this.classList.add('is-active');
         descriptionSubIssue.innerText = findActiveSubIssue().subtitle
+        descriptionSubIssueEn.innerText = findActiveSubIssue().subtitleEn
     }
 }
 
-let tab = function () {
+var tab = function () {
     let law = document.querySelectorAll('.law');
     let lawList = document.querySelectorAll('.law-list');
     let lawName;
@@ -319,6 +396,7 @@ let tab = function () {
         });
         this.classList.add('is-active');
         descriptionIssue.innerText = findActiveIssue().subtitle
+        descriptionIssueEn.innerText = findActiveIssue().subtitleEn
 
         let activeSubIssue = document.getElementsByClassName("sub-law is-active")[0]
         if (activeSubIssue != null) {
@@ -340,6 +418,7 @@ let tab = function () {
         if (item.childNodes[1] != null) {
             item.childNodes[1].classList.add('is-active')
             descriptionSubIssue.innerText = findActiveSubIssue().subtitle
+            descriptionSubIssueEn.innerText = findActiveSubIssue().subtitleEn
         }
     }
 

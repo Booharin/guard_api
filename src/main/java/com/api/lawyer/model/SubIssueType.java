@@ -11,11 +11,29 @@ public class SubIssueType {
     private Integer id;
     private Integer subIssueCode;
     private String title;
+    private String titleEn;
     private String subtitle;
+    private String subtitleEn;
     private Integer issueCode;
 
     public SubIssueType() {}
-    
+
+    public String getTitleEn() {
+        return titleEn;
+    }
+
+    public void setTitleEn(String titleEn) {
+        this.titleEn = titleEn;
+    }
+
+    public String getSubtitleEn() {
+        return subtitleEn;
+    }
+
+    public void setSubtitleEn(String subtitleEn) {
+        this.subtitleEn = subtitleEn;
+    }
+
     public Integer getSubIssueCode() {
         return subIssueCode;
     }

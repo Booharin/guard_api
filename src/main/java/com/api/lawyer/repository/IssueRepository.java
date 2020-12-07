@@ -15,4 +15,6 @@ public interface IssueRepository extends CrudRepository<IssueType, Integer> {
     Optional<IssueType> findByIssueCode(Integer issueCode);
     
     Optional<IssueType> findByTitle(String title);
+    
+    List<IssueType> findAllByIssueCodeIn(List<Integer> issueCodes);
 }

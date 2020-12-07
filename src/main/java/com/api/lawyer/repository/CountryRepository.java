@@ -12,4 +12,5 @@ public interface CountryRepository extends CrudRepository<Country, Integer> {
     Country findCountryByCountryCode(Integer code);
     Optional<Country> findCountryByTitle(String title);
     List<Country> findAllByLocale(String locale);
+    List<Country> findAll();
 }

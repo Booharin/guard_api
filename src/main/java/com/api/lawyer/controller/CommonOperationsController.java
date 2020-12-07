@@ -17,6 +17,7 @@ import javax.mail.internet.InternetAddress;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @RestController
@@ -80,7 +81,7 @@ public class CommonOperationsController {
      * .../api/v1/common/register
      */
     @PostMapping("/register")
-    public ResponseEntity<String> registerNewUser(@RequestBody RegistrationDto newUser) {
+    public User registerNewUser(@RequestBody RegistrationDto newUser) {
         if (userRepository.findByEmail(newUser.getEmail()).isPresent())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "User with same email already exist");
         City city = cityRepository.findCityByTitle(newUser.getCity()).stream().findFirst().orElseThrow();
@@ -89,11 +90,9 @@ public class CommonOperationsController {
         userRepository.save(user);
         userCityRepository.save(new UserCity(user.getId(), city.getCityCode()));
         settingRepository.save(new Setting(user.getId()));
-        if (user.getRole().equals("LAWYER"))
-            lawyerRepository.save(new UserLawyer(user.getId()));
-        else
+        if (user.getRole().equals("ROLE_CLIENT"))
             clientRepository.save(new Client(user.getId()));
-        return ResponseEntity.ok("OK");
+        return user;
     }
     
     /**
@@ -128,7 +127,7 @@ public class CommonOperationsController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid email");
         User user = userRepository.findFirstByEmail(email);
         if (user == null)
-            return;
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         SimpleMailMessage message = new SimpleMailMessage();
         String password = generatePassword();
         user.setPassword(password);
@@ -173,6 +172,19 @@ public class CommonOperationsController {
         return countryToCity;
     }
     
+    @GetMapping("/allcountries")
+    public List<CountryDto> getAllCountriesAndCities() {
+        List<Country> countries = countryRepository.findAll();
+        List<CountryDto> countryToCity = countries.stream().map(CountryDto::new).collect(Collectors.toList());
+        if (countries.isEmpty())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid locale");
+        countryToCity.forEach((country) -> {
+            List<City> cities = cityRepository.findAllByCountryCode(country.getCountryCode());
+            country.setCities(cities);
+        });
+        return countryToCity;
+    }
+    
     /**
      * Controller gets client information by id of his appeal
      *
@@ -209,15 +221,21 @@ public class CommonOperationsController {
      * @param cityTitle - code of the city
      * @return array of lawyers
      *
-     * .../api/v1/lawyer/get?issue_code=1,2,3&cityTitle=Moscow
+     * .../api/v1/lawyers?issue_code=1,2,3&cityTitle=Moscow
      */
     @GetMapping(value = "/lawyers")
     public List<LawyerProfileDto> getAllLawyer(@RequestParam List<Integer> issueCode, @RequestParam String cityTitle) {
         Optional<City> city = cityRepository.findCityByTitle(cityTitle);
         if (city.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "City not found");
-        List<Integer> lawyerId = userRepository.findAllLawyer(issueCode, city.get().getCityCode());
-        List<User> lawyers = userRepository.findAllByIdIn(lawyerId);
+        List<Integer> listUsersByCity = userCityRepository.findAllByCityCode(city.get().getCityCode())
+                .stream()
+                .map(UserCity::getUserId)
+                .collect(Collectors.toList());
+        List<Integer> ListLawyersByIssue = userRepository.findAllLawyer(issueCode);
+        Set<Integer> listLawyers = new HashSet<Integer>(listUsersByCity);
+        listLawyers.retainAll(ListLawyersByIssue);
+        List<User> lawyers = userRepository.findAllByIdIn(new ArrayList<Integer>(listLawyers));
         List<LawyerProfileDto> result = lawyers.stream().map(LawyerProfileDto::new).collect(Collectors.toList());
         result.forEach(it -> it.setReviewList(reviewRepository.findAllByReceiverId(it.getId())));
         result.forEach(it -> {
@@ -232,15 +250,18 @@ public class CommonOperationsController {
                 countryCodes.add(cityRepository.findCityByCityCode(ct).getCountryCode());
             });
             it.setCountryCode(new ArrayList<>(countryCodes));
-            List<IssueType> issueTypeList = lawyerRepository
-                    .findByLawyerId(it.getId())
+    
+            List<Review> reviews = reviewRepository.findAllByReceiverId(it.getId());
+            it.setReviewList(reviews);
+            
+            List<Integer> issues = lawyerRepository.findByLawyerId(it.getId())
                     .stream()
                     .map(UserLawyer::getIssueCode)
-                    .map(issueRepository::findById)
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
                     .collect(Collectors.toList());
-            it.setIssueTypes(issueTypeList);
+            it.setIssueCodes(issues);
+            
+            List<IssueType> issuesType = issueRepository.findAllByIssueCodeIn(issues);
+            it.setIssueTypes(issuesType);
         });
         return result;
     }

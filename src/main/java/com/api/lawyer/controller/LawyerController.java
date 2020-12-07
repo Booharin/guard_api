@@ -1,11 +1,9 @@
 package com.api.lawyer.controller;
 
+import com.api.lawyer.dto.AppealDto;
 import com.api.lawyer.dto.LawyerProfileDto;
 import com.api.lawyer.model.*;
-import com.api.lawyer.repository.CityRepository;
-import com.api.lawyer.repository.CountryRepository;
-import com.api.lawyer.repository.UserCityRepository;
-import com.api.lawyer.repository.UserRepository;
+import com.api.lawyer.repository.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -20,9 +18,22 @@ public class LawyerController {
     
     private final UserCityRepository userCityRepository;
 
-    public LawyerController(UserRepository userRepository, UserCityRepository userCityRepository) {
+    private final LawyerRepository lawyerRepository;
+
+    private final CityRepository cityRepository;
+
+    private final AppealCrudRepository appealCrudRepository;
+
+    public LawyerController(UserRepository userRepository,
+                            UserCityRepository userCityRepository,
+                            LawyerRepository lawyerRepository,
+                            AppealCrudRepository appealCrudRepository,
+                            CityRepository cityRepository) {
         this.userRepository = userRepository;
         this.userCityRepository = userCityRepository;
+        this.lawyerRepository = lawyerRepository;
+        this.appealCrudRepository = appealCrudRepository;
+        this.cityRepository = cityRepository;
     }
 
     /**
@@ -34,7 +45,7 @@ public class LawyerController {
      */
     @PostMapping("/edit")
     public void editLawyerProfile(@RequestBody LawyerProfileDto profile) {
-        Optional<User> lawyer = userRepository.findUserById(profile.getId());
+        Optional<User> lawyer = userRepository.findLawyerById(profile.getId());
         lawyer.ifPresentOrElse(it -> {
             it.setEmail(profile.getEmail());
             it.setFirstName(profile.getFirstName());
@@ -44,10 +55,41 @@ public class LawyerController {
             List<UserCity> userCityList = userCityRepository.findAllByUserId(it.getId());
             int index = 0;
             for(UserCity us: userCityList){
-                us.setCityCode(profile.getCityCode().get(index++));
-                userCityRepository.save(us);
+                if (profile.getCityCode() != null) {
+                    us.setCityCode(profile.getCityCode().get(index++));
+                    userCityRepository.save(us);
+                }
+            }
+            List<UserLawyer> lawyers = lawyerRepository.findByLawyerId(profile.getId());
+            lawyerRepository.deleteAll(lawyers);
+            for (Integer code:
+                 profile.getIssueCodes()) {
+                lawyerRepository.insertLawyer(profile.getId(), code);
             }
             userRepository.save(it);
         }, () -> {throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lawyer not found");});
+    }
+    
+    @GetMapping("/allappeal")
+    public List<AppealDto> getAllAppeals() {
+        List<AppealDto> result = new ArrayList<>();
+        appealCrudRepository.findAll().forEach(it -> {
+            City city = cityRepository.findCityByCityCode(it.getCityCode());
+            result.add(new AppealDto(it, city.getTitle()));
+        });
+        return  result;
+    }
+    
+    @GetMapping("/allappealcity")
+    public List<AppealDto> getAllAppealsByCity(@RequestParam String cityTitle) {
+        List<AppealDto> result = new ArrayList<>();
+        Optional<City> optionalCity = cityRepository.findCityByTitle(cityTitle);
+        if(optionalCity.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "City not found");
+        appealCrudRepository.findAllByCityCode(optionalCity.get().getCityCode()).forEach(it -> {
+            City city = cityRepository.findCityByCityCode(it.getCityCode());
+            result.add(new AppealDto(it, city.getTitle()));
+        });
+        return  result;
     }
 }

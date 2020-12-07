@@ -1,20 +1,22 @@
 package com.api.lawyer.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.io.Serializable;
 
 @Table(name = "user_lawyer")
 @Entity
+@IdClass(UserLawyerId.class)
 public class UserLawyer {
     @Id
     private Integer lawyerId;
+    @Id
     private Integer issueCode;
 
     public UserLawyer() {}
 
-    public UserLawyer(Integer lawyerId) {
+    public UserLawyer(Integer lawyerId, Integer issueCode) {
         this.lawyerId = lawyerId;
+        this.issueCode = issueCode;
     }
 
     public Integer getLawyerId() {
@@ -30,6 +32,20 @@ public class UserLawyer {
     }
 
     public void setIssueCode(Integer issueCode) {
+        this.issueCode = issueCode;
+    }
+}
+
+class UserLawyerId implements Serializable {
+    
+    private Integer lawyerId;
+    
+    private Integer issueCode;
+    
+    public UserLawyerId() {}
+    
+    public UserLawyerId(Integer lawyerId, Integer issueCode) {
+        this.lawyerId = lawyerId;
         this.issueCode = issueCode;
     }
 }

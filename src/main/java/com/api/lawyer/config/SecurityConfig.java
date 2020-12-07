@@ -18,9 +18,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+
+    private static final String WEBSOCKET_CONNECT_ENDPOINT = "/greeting/**";
+    private static final String WEBSOCKET_SEND = "/api/v1/app/**";
     private static final String MANAGER_ENDPOINT = "/api/v1/manager/**";
     private static final String LOGIN_ENDPOINT = "/api/v1/auth/login";
     private static final String USER_ENDPOINT = "/api/v1/users/**";
+    private static final String CHAT_ENDPOINT = "/api/v1/chat/**";
     private static final String REVIEW = "/api/v1/review/**";
     private static final String ISSUE = "/api/v1/issue/**";
     private static final String CLIENT = "/api/v1/client/**";
@@ -33,6 +37,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String ALL_CSS = "/css/**";
     private static final String ALL_JS = "/js/**";
     private static final String ALL_IMG = "/img/**";
+    private static final String TOPIC = "/topic/**";
+    private static final String SOCKET_APP = "/app/**";
+    private static final String ALL = "/**";
+
 
 
     @Autowired
@@ -59,7 +67,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(COMMON_ENDPOINT).permitAll()
                 .antMatchers(ALL_CSS).permitAll()
                 .antMatchers(ALL_IMG).permitAll()
+                .antMatchers(CHAT_ENDPOINT).permitAll()
                 .antMatchers(INDEX).permitAll()
+                .antMatchers(TOPIC).permitAll()
+                .antMatchers(WEBSOCKET_SEND).permitAll()
+                .antMatchers(SOCKET_APP).permitAll()
+                .antMatchers(ALL).permitAll()
+                .antMatchers(WEBSOCKET_CONNECT_ENDPOINT).permitAll()
                 .antMatchers(APPEAL).hasAnyRole("CLIENT", "ADMIN")
                 .antMatchers(LAWYER).hasAnyRole("LAWYER", "ADMIN")
                 .antMatchers(ISSUE).hasAnyRole("ADMIN")
@@ -69,7 +83,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(SETTING).hasAnyRole("CLIENT", "LAWYER", "ADMIN")
                 .antMatchers(USER_ENDPOINT).hasAnyRole("CLIENT", "LAWYER", "ADMIN")
                 .antMatchers(MANAGER_ENDPOINT).hasRole("MANAGER")
-                .anyRequest().authenticated()
                 .and()
                 .apply(new JwtConfigurer(jwtTokenProvider));
     }

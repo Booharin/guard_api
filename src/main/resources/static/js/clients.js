@@ -1,14 +1,14 @@
-const buttonText = `<a href="#editClient" rel="modal:open">
+var buttonText = `<a href="#editClient" rel="modal:open">
 <img src="/img/pencil2.svg" class="edit-icon">
 </a>`
 
-const saveButton = document.getElementById("saveButton")
+var saveButton = document.getElementById("saveButton")
 
 var editId = -1;
 
 saveButton.addEventListener('click', saveButtonSumbit)
 
-let list = function() {
+var list = function() {
     console.log("begin")
     let token = sessionStorage.getItem("token")
 
@@ -24,7 +24,7 @@ let list = function() {
             let json = JSON.parse(xhr.responseText);
             showClients(json)
 
-            const editButton = document.getElementsByClassName("edit-rating")
+            const editButton = document.getElementsByClassName("edit-icon")
 
             for (let svg of editButton) {
                 svg.addEventListener('click', editEvent)
@@ -88,7 +88,7 @@ function collectAllFields() {
     let fields = document.getElementsByClassName("modal-input")
 
     let json = JSON.stringify({"id": parseInt(editId.textContent),"firstName": fields[0].value, "lastName": fields[1].value, "email": fields[2].value, "phoneNumber": fields[3].value, 
-    "countryTitle": fields[4].value, "cityTitle": fields[5].value, "photo": null})
+    "countryCode": [fields[4].value], "cityCode": [fields[5].value], "photo": null})
     console.log(json)
     return json
 }
@@ -99,10 +99,21 @@ function saveButtonSumbit() {
     console.log(editId)
 
     let xhr = new XMLHttpRequest();
-    let url = URL + "lawyer/editProfile";
+    let url = URL + "client/edit";
     xhr.open("POST", url, true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.setRequestHeader("Authorization", `Bearer_${token}`);
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            if(xhr.status === 200) {
+                alert("Saved")
+                getPage(URL + "admin/Clients")
+            } else {
+                alert("Error")
+            }
+        }
+    }
 
     let json = collectAllFields();
     xhr.send(json)

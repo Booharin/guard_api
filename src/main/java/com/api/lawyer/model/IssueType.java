@@ -11,10 +11,28 @@ public class IssueType {
     private Integer id;
     private Integer issueCode;
     private String title;
+    private String titleEn;
     private String subtitle;
+    private String subtitleEn;
     private String locale;
-
     public IssueType() {}
+
+    public String getTitleEn() {
+        return titleEn;
+    }
+
+    public void setTitleEn(String titleEn) {
+        this.titleEn = titleEn;
+    }
+
+    public String getSubtitleEn() {
+        return subtitleEn;
+    }
+
+    public void setSubtitleEn(String subtitleEn) {
+        this.subtitleEn = subtitleEn;
+    }
+
 
     public Integer getId(){
         return id;

@@ -9,7 +9,7 @@ public class RegistrationDto {
     private String password;
     private String city;
     private String role;
-    
+
     public String getFirstName() {
         return firstName;
     }

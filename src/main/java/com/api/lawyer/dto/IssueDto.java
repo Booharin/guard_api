@@ -10,7 +10,9 @@ public class IssueDto {
     private Integer id;
     private Integer issueCode;
     private String title;
+    private String titleEn;
     private String subtitle;
+    private String subtitleEn;
     private String locale;
     private List<SubIssueType> subIssueTypeList;
     
@@ -20,12 +22,30 @@ public class IssueDto {
         this.title = issueType.getTitle();
         this.subtitle = issueType.getSubtitle();
         this.locale = issueType.getLocale();
+        this.subtitleEn = issueType.getSubtitleEn();
+        this.titleEn = issueType.getTitleEn();
     }
     
     public List<SubIssueType> getSubIssueTypeList() {
         return subIssueTypeList;
     }
-    
+
+    public String getTitleEn() {
+        return titleEn;
+    }
+
+    public void setTitleEn(String titleEn) {
+        this.titleEn = titleEn;
+    }
+
+    public String getSubtitleEn() {
+        return subtitleEn;
+    }
+
+    public void setSubtitleEn(String subtitleEn) {
+        this.subtitleEn = subtitleEn;
+    }
+
     public void setSubIssueTypeList(List<SubIssueType> subIssueTypeList) {
         this.subIssueTypeList = subIssueTypeList;
     }

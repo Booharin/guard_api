@@ -72,7 +72,7 @@ public class AuthenticationRestControllerV1 {
             cityCodes.forEach(it -> {
                 countryCodes.add(cityRepository.findCityByCityCode(it).getCountryCode());
             });
-            userProfileDto.setCityCode(new ArrayList<>(countryCodes));
+            userProfileDto.setCountryCode(new ArrayList<>(countryCodes));
             List<Review> reviews = reviewRepository.findAllByReceiverId(user.getId());
             userProfileDto.setReviewList(reviews);
             if (user.getRole().equals("ROLE_LAWYER")) {
