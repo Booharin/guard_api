@@ -53,18 +53,17 @@ public class LawyerController {
             it.setPhoneNumber(profile.getPhoneNumber());
             it.setPhoto(profile.getPhoto());
             List<UserCity> userCityList = userCityRepository.findAllByUserId(it.getId());
-            int index = 0;
-            for(UserCity us: userCityList){
-                if (profile.getCityCode() != null) {
-                    us.setCityCode(profile.getCityCode().get(index++));
-                    userCityRepository.save(us);
-                }
+            userCityRepository.deleteAll(userCityList);
+            for(Integer cityCode:  profile.getCityCode()) {
+                UserCity us = new UserCity(it.getId(), cityCode);
+                userCityRepository.save(us);
             }
+            if (profile.getSubIssueCodes() != null) {
             List<UserLawyer> lawyers = lawyerRepository.findByLawyerId(profile.getId());
             lawyerRepository.deleteAll(lawyers);
-            for (Integer code:
-                 profile.getIssueCodes()) {
-                lawyerRepository.insertLawyer(profile.getId(), code);
+                for (Integer code : profile.getSubIssueCodes()) {
+                    lawyerRepository.insertLawyer(profile.getId(), code);
+                }
             }
             userRepository.save(it);
         }, () -> {throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lawyer not found");});

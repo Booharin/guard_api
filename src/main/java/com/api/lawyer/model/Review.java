@@ -1,8 +1,7 @@
 package com.api.lawyer.model;
 
-import lombok.Data;
-
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Table(name = "review")
 @Entity
@@ -15,7 +14,16 @@ public class Review {
     private Double rating;
     private Integer senderId;
     private Integer receiverId;
+    private Timestamp dateCreated;
     public Review() {}
+    
+    public Timestamp getDateCreated() {
+        return dateCreated;
+    }
+    
+    public void setDateCreated(Timestamp dateCreated) {
+        this.dateCreated = dateCreated;
+    }
     
     public Integer getReviewId() {
         return reviewId;

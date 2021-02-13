@@ -11,6 +11,8 @@ import java.util.Optional;
 public interface SubIssueRepository extends CrudRepository<SubIssueType, Integer> {
 
     List<SubIssueType> findAllByIssueCode(Integer issueCode);
+
+    List<SubIssueType> findAllBySubIssueCodeIn(List<Integer> codes);
     
     Optional<SubIssueType> findBySubIssueCode(Integer issueCode);
     

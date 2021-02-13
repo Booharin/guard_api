@@ -14,7 +14,7 @@ public class Appeal {
     private String appealDescription;
     private Timestamp dateCreated;
     private Integer clientId;
-    private Integer issueCode;
+    private Integer subIssueCode;
     private Integer cityCode;
     private Boolean isLawyerChoosed;
     
@@ -60,12 +60,12 @@ public class Appeal {
         this.clientId = clientId;
     }
     
-    public Integer getIssueCode() {
-        return issueCode;
+    public Integer getSubIssueCode() {
+        return subIssueCode;
     }
     
-    public void setIssueCode(Integer issueCode) {
-        this.issueCode = issueCode;
+    public void setSubIssueCode(Integer subIssueCode) {
+        this.subIssueCode = subIssueCode;
     }
     
     public Integer getCityCode() {

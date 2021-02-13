@@ -2,7 +2,7 @@ package com.api.lawyer.bucket;
 
 public enum BucketName {
 
-    PROFILE_IMAGE("lawyer-api");
+    IMAGES("lawyer-api");
 
     private final String bucketName;
 

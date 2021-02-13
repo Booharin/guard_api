@@ -2,6 +2,7 @@ package com.api.lawyer.dto;
 
 import com.api.lawyer.model.IssueType;
 import com.api.lawyer.model.Review;
+import com.api.lawyer.model.SubIssueType;
 import com.api.lawyer.model.User;
 
 import java.sql.Timestamp;
@@ -19,7 +20,7 @@ public class UserProfileDto {
     protected Double averageRate;
     private Timestamp dateCreated;
     protected List<Review> reviewList;
-    private List<IssueType> issueTypes;
+    private List<SubIssueType> subIssueTypes;
     private List<Integer> cityCode;
     private List<Integer> countryCode;
     
@@ -69,12 +70,12 @@ public class UserProfileDto {
         this.dateCreated = dateCreated;
     }
     
-    public List<IssueType> getIssueTypes() {
-        return issueTypes;
+    public List<SubIssueType> getSubIssueTypes() {
+        return subIssueTypes;
     }
     
-    public void setIssueTypes(List<IssueType> issueTypes) {
-        this.issueTypes = issueTypes;
+    public void setSubIssueTypes(List<SubIssueType> subIssueTypes) {
+        this.subIssueTypes = subIssueTypes;
     }
     
     public List<Review> getReviewList() {

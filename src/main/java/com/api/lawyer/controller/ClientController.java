@@ -29,20 +29,20 @@ public class ClientController {
 
     private final ReviewRepository reviewRepository;
 
-    private final IssueRepository issueRepository;
+    private final SubIssueRepository subIssueRepository;
 
     public ClientController(UserRepository userRepository,
                             UserCityRepository userCityRepository,
                             LawyerRepository lawyerRepository,
                             CityRepository cityRepository,
                             ReviewRepository reviewRepository,
-                            IssueRepository issueRepository) {
+                            SubIssueRepository subIssueRepository) {
         this.userRepository = userRepository;
         this.lawyerRepository = lawyerRepository;
         this.userCityRepository = userCityRepository;
-        this.issueRepository = issueRepository;
         this.cityRepository = cityRepository;
         this.reviewRepository = reviewRepository;
+        this.subIssueRepository = subIssueRepository;
     }
     
 
@@ -63,9 +63,9 @@ public class ClientController {
             it.setPhoneNumber(profile.getPhoneNumber());
             it.setPhoto(profile.getPhoto());
             List<UserCity> userCityList = userCityRepository.findAllByUserId(it.getId());
-            int index = 0;
-            for(UserCity us: userCityList){
-                us.setCityCode(profile.getCityCode().get(index++));
+            userCityRepository.deleteAll(userCityList);
+            for(Integer cityCode:  profile.getCityCode()) {
+                UserCity us = new UserCity(it.getId(), cityCode);
                 userCityRepository.save(us);
             }
             userRepository.save(it);
@@ -101,14 +101,13 @@ public class ClientController {
             List<Review> reviews = reviewRepository.findAllByReceiverId(it.getId());
             it.setReviewList(reviews);
 
-            List<Integer> issues = lawyerRepository.findByLawyerId(it.getId())
+            List<Integer> subIssues = lawyerRepository.findByLawyerId(it.getId())
                     .stream()
-                    .map(UserLawyer::getIssueCode)
+                    .map(UserLawyer::getSubIssueCode)
                     .collect(Collectors.toList());
-            it.setIssueCodes(issues);
-
-            List<IssueType> issuesType = issueRepository.findAllByIssueCodeIn(issues);
-            it.setIssueTypes(issuesType);
+            it.setSubIssueCodes(subIssues);
+            List<SubIssueType> types = subIssueRepository.findAllBySubIssueCodeIn(subIssues);
+            it.setSubIssueTypes(types);
         });
         return result;
     }

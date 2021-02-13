@@ -209,7 +209,7 @@ public class CommonOperationsController {
         clientProfileDto.setCountryCode(new ArrayList<>(countryCodes));
         List<Review> reviews = reviewRepository.findAllByReceiverId(user.getId());
         clientProfileDto.setReviewList(reviews);
-        clientProfileDto.setIssueTypes(null);
+        clientProfileDto.setSubIssueTypes(null);
         return clientProfileDto;
     }
     
@@ -254,14 +254,11 @@ public class CommonOperationsController {
             List<Review> reviews = reviewRepository.findAllByReceiverId(it.getId());
             it.setReviewList(reviews);
             
-            List<Integer> issues = lawyerRepository.findByLawyerId(it.getId())
+            List<Integer> subIssues = lawyerRepository.findByLawyerId(it.getId())
                     .stream()
-                    .map(UserLawyer::getIssueCode)
+                    .map(UserLawyer::getSubIssueCode)
                     .collect(Collectors.toList());
-            it.setIssueCodes(issues);
-            
-            List<IssueType> issuesType = issueRepository.findAllByIssueCodeIn(issues);
-            it.setIssueTypes(issuesType);
+            it.setSubIssueCodes(subIssues);
         });
         return result;
     }
@@ -293,15 +290,16 @@ public class CommonOperationsController {
         lawyerProfileDto.setCountryCode(new ArrayList<>(countryCodes));
         List<Review> reviews = reviewRepository.findAllByReceiverId(lawyerProfileDto.getId());
         lawyerProfileDto.setReviewList(reviews);
-        List<IssueType> issueTypeList = lawyerRepository
+        List<SubIssueType> subIssueTypeList = lawyerRepository
                 .findByLawyerId(lawyerProfileDto.getId())
                 .stream()
-                .map(UserLawyer::getIssueCode)
-                .map(issueRepository::findById)
+                .map(UserLawyer::getSubIssueCode)
+                .map(subIssueRepository::findBySubIssueCode)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
-        lawyerProfileDto.setIssueTypes(issueTypeList);
+        lawyerProfileDto.setSubIssueTypes(subIssueTypeList);
+        lawyerProfileDto.setSubIssueCodes(subIssueTypeList.stream().map(SubIssueType::getSubIssueCode).collect(Collectors.toList()));
         return lawyerProfileDto;
     }
     

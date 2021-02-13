@@ -10,7 +10,7 @@ public class AppealDto {
     private String appealDescription;
     private Timestamp dateCreated;
     private Integer clientId;
-    private Integer issueCode;
+    private Integer subIssueCode;
     private String cityTitle;
     private Boolean isLawyerChoosed;
 
@@ -20,7 +20,7 @@ public class AppealDto {
         this.appealDescription = appeal.getAppealDescription();
         this.dateCreated = appeal.getDateCreated();
         this.clientId = appeal.getClientId();
-        this.issueCode = appeal.getIssueCode();
+        this.subIssueCode = appeal.getSubIssueCode();
         this.isLawyerChoosed = appeal.getLawyerChoosed();
         this.cityTitle = cityTitle;
     }
@@ -65,12 +65,12 @@ public class AppealDto {
         this.clientId = clientId;
     }
 
-    public Integer getIssueCode() {
-        return issueCode;
+    public Integer getSubIssueCode() {
+        return subIssueCode;
     }
 
-    public void setIssueCode(Integer issueCode) {
-        this.issueCode = issueCode;
+    public void setSubIssueCode(Integer subIssueCode) {
+        this.subIssueCode = subIssueCode;
     }
 
     public String getCityTitle() {

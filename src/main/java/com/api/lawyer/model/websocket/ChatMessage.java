@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.sql.Timestamp;
 
 @Data
 @AllArgsConstructor
@@ -23,11 +23,9 @@ public class ChatMessage {
     private Integer id;
 
     private Integer chatId;
-    //private Integer senderId;
-    //private Integer recipientId;
+    private Integer senderId;
+    private Timestamp dateCreated;
     private String senderName;
-    //private String recipientName;
     private String content;
-    private Long timestamp;
-    //private MessageStatus status;
+    //private String fileUrl;
 }

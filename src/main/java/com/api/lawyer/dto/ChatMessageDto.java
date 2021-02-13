@@ -2,26 +2,16 @@ package com.api.lawyer.dto;
 
 public class ChatMessageDto {
 
-    private Integer id;
-
-    private Integer chatId;
     private String senderName;
     private String content;
+    private Integer senderId;
 
-    public Integer getId() {
-        return id;
+    public Integer getSenderId() {
+        return senderId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getChatId() {
-        return chatId;
-    }
-
-    public void setChatId(Integer chatId) {
-        this.chatId = chatId;
+    public void setSenderId(Integer senderId) {
+        this.senderId = senderId;
     }
 
     public String getSenderName() {
@@ -39,4 +29,5 @@ public class ChatMessageDto {
     public void setContent(String content) {
         this.content = content;
     }
+
 }
