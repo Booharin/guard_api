@@ -79,7 +79,7 @@ public class AppealController {
             appeal.setTitle(newAppeal.getTitle());
             appeal.setAppealDescription(newAppeal.getAppealDescription());
             appeal.setDateCreated(newAppeal.getDateCreated());
-            appeal.setIssueCode(newAppeal.getIssueCode());
+            appeal.setSubIssueCode(newAppeal.getSubIssueCode());
             appealCrudRepository.save(appeal);
         }, () -> {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
@@ -103,6 +103,18 @@ public class AppealController {
     }
 
     /**
+     * Controller get appeal by id
+     *
+     * @param appealId appeal's id
+     * .../api/v1/appeal/findAppeal?appealId=1
+     */
+    @RequestMapping(value = "/findAppeal", method = RequestMethod.GET)
+    public Appeal findAppeal(@RequestParam Integer appealId) {
+        Optional<Appeal> appealToGet = appealCrudRepository.findById(appealId);
+        return appealToGet.orElse(null);
+    }
+
+    /**
      * Controller edits appeal
      *
      * @param appeal appeal with changes
@@ -113,7 +125,7 @@ public class AppealController {
     public void editAppeal(@RequestBody Appeal appeal) {
         Optional<Appeal> optionalAppeal = appealCrudRepository.findById(appeal.getId());
         optionalAppeal.ifPresentOrElse(appeal1 -> {
-            appeal1.setIssueCode(appeal.getIssueCode());
+            appeal1.setSubIssueCode(appeal.getSubIssueCode());
             appeal1.setTitle(appeal.getTitle());
             appeal1.setAppealDescription(appeal.getAppealDescription());
             appealCrudRepository.save(appeal1);

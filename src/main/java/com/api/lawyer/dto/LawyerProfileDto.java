@@ -7,7 +7,7 @@ import java.util.List;
 
 public class LawyerProfileDto extends UserProfileDto {
 
-    private List<Integer> issueCodes;
+    private List<Integer> subIssueCodes;
 
     public LawyerProfileDto(User user) {
         super(user);
@@ -16,11 +16,11 @@ public class LawyerProfileDto extends UserProfileDto {
     public LawyerProfileDto() {}
 
 
-    public List<Integer> getIssueCodes() {
-        return issueCodes;
+    public List<Integer> getSubIssueCodes() {
+        return subIssueCodes;
     }
 
-    public void setIssueCodes(List<Integer> issueCodes) {
-        this.issueCodes = issueCodes;
+    public void setSubIssueCodes(List<Integer> subIssueCodes) {
+        this.subIssueCodes = subIssueCodes;
     }
 }

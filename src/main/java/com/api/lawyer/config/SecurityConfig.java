@@ -19,7 +19,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtTokenProvider jwtTokenProvider;
 
 
-    private static final String WEBSOCKET_CONNECT_ENDPOINT = "/greeting/**";
+    private static final String WEBSOCKET_CONNECT_ENDPOINT = "/name/**";
     private static final String WEBSOCKET_SEND = "/api/v1/app/**";
     private static final String MANAGER_ENDPOINT = "/api/v1/manager/**";
     private static final String LOGIN_ENDPOINT = "/api/v1/auth/login";
@@ -39,9 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String ALL_IMG = "/img/**";
     private static final String TOPIC = "/topic/**";
     private static final String SOCKET_APP = "/app/**";
-    private static final String ALL = "/**";
-
-
+    private static final String FAVICON = "/static/favicon.ico";
 
     @Autowired
     public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
@@ -62,6 +60,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
+                .antMatchers(FAVICON).permitAll()
                 .antMatchers(ALL_JS).permitAll()
                 .antMatchers(LOGIN_ENDPOINT).permitAll()
                 .antMatchers(COMMON_ENDPOINT).permitAll()
@@ -72,9 +71,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(TOPIC).permitAll()
                 .antMatchers(WEBSOCKET_SEND).permitAll()
                 .antMatchers(SOCKET_APP).permitAll()
-                .antMatchers(ALL).permitAll()
                 .antMatchers(WEBSOCKET_CONNECT_ENDPOINT).permitAll()
-                .antMatchers(APPEAL).hasAnyRole("CLIENT", "ADMIN")
+                .antMatchers(APPEAL).hasAnyRole("CLIENT", "ADMIN", "LAWYER")
                 .antMatchers(LAWYER).hasAnyRole("LAWYER", "ADMIN")
                 .antMatchers(ISSUE).hasAnyRole("ADMIN")
                 .antMatchers(REVIEW).hasAnyRole("CLIENT", "LAWYER", "ADMIN")

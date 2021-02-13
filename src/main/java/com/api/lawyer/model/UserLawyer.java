@@ -10,13 +10,13 @@ public class UserLawyer {
     @Id
     private Integer lawyerId;
     @Id
-    private Integer issueCode;
+    private Integer subIssueCode;
 
     public UserLawyer() {}
 
-    public UserLawyer(Integer lawyerId, Integer issueCode) {
+    public UserLawyer(Integer lawyerId, Integer subIssueCode) {
         this.lawyerId = lawyerId;
-        this.issueCode = issueCode;
+        this.subIssueCode = subIssueCode;
     }
 
     public Integer getLawyerId() {
@@ -27,12 +27,12 @@ public class UserLawyer {
         this.lawyerId = lawyerId;
     }
 
-    public Integer getIssueCode() {
-        return issueCode;
+    public Integer getSubIssueCode() {
+        return subIssueCode;
     }
 
-    public void setIssueCode(Integer issueCode) {
-        this.issueCode = issueCode;
+    public void setSubIssueCode(Integer subIssueCode) {
+        this.subIssueCode = subIssueCode;
     }
 }
 
@@ -40,12 +40,12 @@ class UserLawyerId implements Serializable {
     
     private Integer lawyerId;
     
-    private Integer issueCode;
+    private Integer subIssueCode;
     
     public UserLawyerId() {}
     
-    public UserLawyerId(Integer lawyerId, Integer issueCode) {
+    public UserLawyerId(Integer lawyerId, Integer subIssueCode) {
         this.lawyerId = lawyerId;
-        this.issueCode = issueCode;
+        this.subIssueCode = subIssueCode;
     }
 }

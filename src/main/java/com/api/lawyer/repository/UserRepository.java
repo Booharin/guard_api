@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends CrudRepository<User, Integer> {
     
-    @Query( value = "select distinct id from user_table join user_lawyer on user_lawyer.issue_code in ?1 and id = user_lawyer.lawyer_id",
+    @Query( value = "select distinct id from user_table join user_lawyer on user_lawyer.sub_issue_code in ?1 and id = user_lawyer.lawyer_id",
             nativeQuery = true)
     List<Integer> findAllLawyer(List<Integer> issue_code);
     
@@ -26,6 +26,8 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     User findFirstByEmail(String email);
 
     Optional<User> findUserById(Integer id);
+
+    User findFirstById(Integer id);
 
     List<User> findAll();
 

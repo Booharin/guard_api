@@ -1,13 +1,21 @@
 package com.api.lawyer.controller;
 
 import com.api.lawyer.bucket.BucketName;
+import com.api.lawyer.dto.ChatMessageDto;
 import com.api.lawyer.filestore.FileStore;
 import com.api.lawyer.model.User;
+import com.api.lawyer.model.websocket.ChatMessage;
+import com.api.lawyer.repository.ChatMessageRepository;
 import com.api.lawyer.repository.UserRepository;
+import com.api.lawyer.service.impl.BASE64DecodedMultipartFile;
 import com.api.lawyer.service.impl.UserServiceImpl;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -15,6 +23,7 @@ import org.springframework.web.server.ResponseStatusException;
 import static org.apache.http.entity.ContentType.*;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.*;
 
 
@@ -25,21 +34,17 @@ public class UserController {
     private final FileStore fileStore;
     private final UserServiceImpl userServiceImpl;
     private final UserRepository userRepository;
-    
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+
+    @Autowired
+    private ChatMessageRepository chatMessageRepository;
+
     public UserController(UserServiceImpl userServiceImpl, UserRepository userRepository, FileStore fileStore) {
         this.userServiceImpl = userServiceImpl;
         this.fileStore = fileStore;
         this.userRepository = userRepository;
-    }
-
-    /**
-     *
-     * @return
-     * @throws JsonProcessingException
-     */
-    @RequestMapping(value = "/getSuccess", method = RequestMethod.POST)
-    public String  getSuccess() throws JsonProcessingException {
-        return userServiceImpl.writeMessage();
     }
 
     @PostMapping(
@@ -60,7 +65,7 @@ public class UserController {
         Map<String, String> metadata = extractMetadata(file);
 
         // 5. Store the image in s3 and update database (userProfileImageLink) with s3 image link
-        String path = String.format("%s/%s", BucketName.PROFILE_IMAGE.getBucketName(), user.getId());
+        String path = String.format("%s/%s", BucketName.IMAGES.getBucketName(), user.getId());
         String filename = String.format("%s-%s", file.getOriginalFilename(), UUID.randomUUID());
 
         try {
@@ -73,12 +78,87 @@ public class UserController {
 
     }
 
+    @MessageMapping("/chat/{roomId}/{recieverId}/sendPhotoMessage")
+    public void sendPhotoMessage(@DestinationVariable String roomId,
+                                 @DestinationVariable String recieverId,
+                                 @Payload ChatMessageDto chatMessage) {
+
+        byte[] decoded = Base64.getDecoder().decode(chatMessage.getContent());
+        BASE64DecodedMultipartFile file = new BASE64DecodedMultipartFile(decoded, "multipart/form-data");
+
+        isFileEmpty(file);
+        // 2. If file is an image
+        //isImage(file);
+
+        // create photo message
+        ChatMessage mess = new ChatMessage();
+        Date date = new Date();
+        mess.setContent(chatMessage.getContent());
+        mess.setSenderName(chatMessage.getSenderName());
+        mess.setChatId(Integer.valueOf(roomId));
+        mess.setDateCreated(new Timestamp(date.getTime()));
+        mess.setSenderId(chatMessage.getSenderId());
+        chatMessageRepository.save(mess);
+
+        // 4. Grab some metadata from file if any
+        Map<String, String> metadata = extractMetadata(file);
+
+        // 5. Store the image in s3 and update database (userProfileImageLink) with s3 image link
+        String path = String.format("%s/%s", BucketName.IMAGES.getBucketName(), UUID.randomUUID() + "-" + roomId + "_" + recieverId);
+        String filename = String.format("%s-%s", file.getOriginalFilename(), UUID.randomUUID());
+
+        messagingTemplate.convertAndSend(String.format("/topic/%s", recieverId), mess);
+
+        try {
+            fileStore.save(path, filename, Optional.of(metadata), file.getInputStream());
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    @MessageMapping("/chat/{roomId}/{recieverId}/{senderName}/{senderId}/sendPhotoMessageCheck")
+    public void sendPhotoMessage(@DestinationVariable String roomId,
+                                 @DestinationVariable String recieverId,
+                                 @DestinationVariable String senderName,
+                                 @DestinationVariable Integer senderId,
+                                 @Payload MultipartFile file) {
+
+        //isFileEmpty(file);
+        // 2. If file is an image
+        //isImage(file);
+
+        // create photo message
+        ChatMessage mess = new ChatMessage();
+        Date date = new Date();
+        mess.setContent("check photo");
+        mess.setSenderName(senderName);
+        mess.setChatId(Integer.valueOf(roomId));
+        mess.setDateCreated(new Timestamp(date.getTime()));
+        mess.setSenderId(senderId);
+        chatMessageRepository.save(mess);
+
+        // 4. Grab some metadata from file if any
+        Map<String, String> metadata = extractMetadata(file);
+
+        // 5. Store the image in s3 and update database (userProfileImageLink) with s3 image link
+        String path = String.format("%s/%s", BucketName.IMAGES.getBucketName(), UUID.randomUUID() + "-" + roomId + "_" + recieverId);
+        String filename = String.format("%s-%s", file.getOriginalFilename(), UUID.randomUUID());
+
+        messagingTemplate.convertAndSend(String.format("/topic/%s", recieverId), mess);
+
+        try {
+            fileStore.save(path, filename, Optional.of(metadata), file.getInputStream());
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
     @GetMapping("{id}/image/download")
     public byte[] downloadUserProfileImage(@PathVariable("id") Integer id) {
         User user = getUserProfileOrThrow(id);
 
         String path = String.format("%s/%s",
-                BucketName.PROFILE_IMAGE.getBucketName(),
+                BucketName.IMAGES.getBucketName(),
                 user.getId());
 
         if (user.getPhoto() == null || user.getPhoto().isEmpty()) {

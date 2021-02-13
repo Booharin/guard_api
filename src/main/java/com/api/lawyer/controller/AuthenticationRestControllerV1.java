@@ -28,7 +28,7 @@ public class AuthenticationRestControllerV1 {
     private final UserService userService;
     private final CityRepository cityRepository;
     private final ReviewRepository reviewRepository;
-    private final IssueRepository issueRepository;
+    private final SubIssueRepository subIssueRepository;
     private final LawyerRepository lawyerRepository;
     private final UserCityRepository userCityRepository;
 
@@ -38,14 +38,14 @@ public class AuthenticationRestControllerV1 {
                                           CityRepository cityRepository,
                                           UserCityRepository userCityRepository,
                                           ReviewRepository reviewRepository,
-                                          IssueRepository issueRepository,
+                                          SubIssueRepository subIssueRepository,
                                           LawyerRepository lawyerRepository,
                                           UserService userService) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userService = userService;
         this.lawyerRepository = lawyerRepository;
-        this.issueRepository = issueRepository;
+        this.subIssueRepository = subIssueRepository;
         this.reviewRepository = reviewRepository;
         this.userCityRepository = userCityRepository;
         this.cityRepository = cityRepository;
@@ -76,15 +76,15 @@ public class AuthenticationRestControllerV1 {
             List<Review> reviews = reviewRepository.findAllByReceiverId(user.getId());
             userProfileDto.setReviewList(reviews);
             if (user.getRole().equals("ROLE_LAWYER")) {
-                List<IssueType> issueTypeList = lawyerRepository
+                List<SubIssueType> subIssueTypeList = lawyerRepository
                         .findByLawyerId(user.getId())
                         .stream()
-                        .map(UserLawyer::getIssueCode)
-                        .map(issueRepository::findById)
+                        .map(UserLawyer::getSubIssueCode)
+                        .map(subIssueRepository::findBySubIssueCode)
                         .filter(Optional::isPresent)
                         .map(Optional::get)
                         .collect(Collectors.toList());
-                userProfileDto.setIssueTypes(issueTypeList);
+                userProfileDto.setSubIssueTypes(subIssueTypeList);
             }
             String token = jwtTokenProvider.createToken(userEmail, user);
             Map<Object, Object> response = new HashMap<>();
