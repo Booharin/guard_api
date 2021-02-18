@@ -7,7 +7,6 @@ import javax.persistence.*;
 public class Setting {
     
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
     private Boolean isPhoneVisible;
     private Boolean isEmailVisible;
