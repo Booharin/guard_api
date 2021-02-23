@@ -31,6 +31,7 @@ public class AuthenticationRestControllerV1 {
     private final SubIssueRepository subIssueRepository;
     private final LawyerRepository lawyerRepository;
     private final UserCityRepository userCityRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     public AuthenticationRestControllerV1(AuthenticationManager authenticationManager,
@@ -40,7 +41,8 @@ public class AuthenticationRestControllerV1 {
                                           ReviewRepository reviewRepository,
                                           SubIssueRepository subIssueRepository,
                                           LawyerRepository lawyerRepository,
-                                          UserService userService) {
+                                          UserService userService,
+                                          UserRepository userRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userService = userService;
@@ -49,6 +51,7 @@ public class AuthenticationRestControllerV1 {
         this.reviewRepository = reviewRepository;
         this.userCityRepository = userCityRepository;
         this.cityRepository = cityRepository;
+        this.userRepository = userRepository;
     }
 
     @CrossOrigin(origins = "*")
@@ -86,6 +89,12 @@ public class AuthenticationRestControllerV1 {
                         .collect(Collectors.toList());
                 userProfileDto.setSubIssueTypes(subIssueTypeList);
             }
+
+            if (requestDto.getTokenDevice() != null && !requestDto.getTokenDevice().isEmpty()) {
+                user.setTokenDevice(requestDto.getTokenDevice());
+                userRepository.save(user);
+            }
+
             String token = jwtTokenProvider.createToken(userEmail, user);
             Map<Object, Object> response = new HashMap<>();
             response.put("token", token);

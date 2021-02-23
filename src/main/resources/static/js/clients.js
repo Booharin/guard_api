@@ -2,11 +2,17 @@ var buttonText = `<a href="#editClient" rel="modal:open">
 <img src="/img/pencil2.svg" class="edit-icon">
 </a>`
 
+var buttonPush = `<a href="#pushToClient" rel="modal:open">
+<img src="/img/envelope.svg" class="push-icon" width="30px">
+</a>`
+
 var saveButton = document.getElementById("saveButton")
+var pushButton = document.getElementById("pushButton")
 
 var editId = -1;
 
 saveButton.addEventListener('click', saveButtonSumbit)
+pushButton.addEventListener('click', pushButtonSumbit)
 
 var list = function() {
     console.log("begin")
@@ -25,14 +31,23 @@ var list = function() {
             showClients(json)
 
             const editButton = document.getElementsByClassName("edit-icon")
+            const pushButton = document.getElementsByClassName("push-icon")
 
             for (let svg of editButton) {
                 svg.addEventListener('click', editEvent)
+            }
+            for (let svg of pushButton) {
+                svg.addEventListener('click', pushEvent)
             }
 
             function editEvent() {
                 editId = this.parentNode.parentNode.parentNode.childNodes[0].firstChild
                 setAllFields()
+                console.log(editId)
+            }
+
+            function pushEvent() {
+                editId = this.parentNode.parentNode.parentNode.childNodes[0].firstChild
                 console.log(editId)
             }
 
@@ -70,7 +85,7 @@ var list = function() {
             let countryCode = row.insertCell(6);
             let rating = row.insertCell(7);
 
-            id.innerHTML = client.id
+            id.innerHTML = client.id + " " + buttonPush
             name.innerHTML = client.firstName
             surName.innerHTML = client.lastName
             email.innerHTML = client.email
@@ -116,6 +131,40 @@ function saveButtonSumbit() {
     }
 
     let json = collectAllFields();
+    xhr.send(json)
+}
+
+function collectPushData() {
+    let field = document.getElementById("pushMessage")
+
+    let json = JSON.stringify({"userId": parseInt(editId.textContent),"message": field.value})
+    console.log(json)
+    return json
+}
+
+function pushButtonSumbit() {
+    let token = sessionStorage.getItem("token")
+
+    console.log(editId)
+
+    let xhr = new XMLHttpRequest();
+    let url = URL + "users/push";
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Authorization", `Bearer_${token}`);
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            if(xhr.status === 200) {
+                alert("Sended")
+                getPage(URL + "admin/Clients")
+            } else {
+                alert("Error")
+            }
+        }
+    }
+
+    let json = collectPushData();
     xhr.send(json)
 }
 
