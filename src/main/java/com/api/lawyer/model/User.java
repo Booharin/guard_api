@@ -25,6 +25,7 @@ public class User {
     private Timestamp dateCreated;
     private Double averageRate;
     private String role;
+    private String tokenDevice;
     
     public User() {}
     
@@ -115,5 +116,13 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getTokenDevice() {
+        return tokenDevice;
+    }
+
+    public void setTokenDevice(String tokenDevice) {
+        this.tokenDevice = tokenDevice;
     }
 }

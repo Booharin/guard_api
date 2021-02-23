@@ -225,3 +225,9 @@ margin-left: 20px;  color: black;
   color: whitesmoke;
   background-color: #394165;
 }
+
+textarea{
+ width: 90%;
+ height: 150px;
+ margin-left: 20px;
+}
