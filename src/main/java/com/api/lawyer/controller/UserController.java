@@ -8,6 +8,7 @@ import com.api.lawyer.model.User;
 import com.api.lawyer.model.websocket.ChatMessage;
 import com.api.lawyer.repository.ChatMessageRepository;
 import com.api.lawyer.repository.UserRepository;
+import com.api.lawyer.security.jwt.JwtUser;
 import com.api.lawyer.service.impl.BASE64DecodedMultipartFile;
 import com.api.lawyer.service.impl.UserServiceImpl;
 import com.eatthepath.pushy.apns.ApnsClient;
@@ -26,6 +27,7 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -225,19 +227,21 @@ public class UserController {
     }
 
     @PostMapping("/push")
-    public ResponseEntity push(@RequestBody PushDto params) {
-        String result = sendPush(params.getUserId(),params.getMessage());
+    public ResponseEntity push(@RequestBody PushDto params, Authentication authentication) {
+        int userId = ((JwtUser)authentication.getPrincipal()).getId();
+        String result = sendPush(params.getUserId(),userId,params.getMessage(),"admin");
         Map<Object, Object> response = new HashMap<>();
         response.put("result", result);
         return ResponseEntity.ok(response);
     }
 
-    public String sendPush(int userId, String message)
+    public String sendPush(int toUserId, int fromUserId, String message, String categoryName)
     {
         try {
-            User user = getUserProfileOrThrow(userId);
+            User toUser = getUserProfileOrThrow(toUserId);
+            User fromUser = getUserProfileOrThrow(fromUserId);
 
-            if (user.getTokenDevice() == null || user.getTokenDevice().isEmpty())
+            if (toUser.getTokenDevice() == null || toUser.getTokenDevice().isEmpty())
                 throw new IllegalStateException("tokenDevice is null");
 
             final ApnsClient apnsClient = new ApnsClientBuilder()
@@ -248,8 +252,24 @@ public class UserController {
             final ApnsPayloadBuilder payloadBuilder = new SimpleApnsPayloadBuilder();
             payloadBuilder.setAlertBody(message);
 
+            StringBuilder alertTitle = new StringBuilder();
+            if (fromUser.getFirstName() != null && !fromUser.getFirstName().isEmpty())
+                alertTitle.append(fromUser.getFirstName());
+            if (fromUser.getLastName() != null && !fromUser.getLastName().isEmpty()) {
+                if (alertTitle.length()>0) alertTitle.append(" ");
+                alertTitle.append(fromUser.getLastName());
+            }
+            if (alertTitle.length() == 0)
+                alertTitle.append(fromUser.getEmail());
+
+            payloadBuilder.setAlertTitle(alertTitle.toString());
+
+            payloadBuilder.setBadgeNumber(1);
+            payloadBuilder.setCategoryName(categoryName);
+            payloadBuilder.setSound("default");
+
             final String payload = payloadBuilder.build();
-            final String token = TokenUtil.sanitizeTokenString(String.format("<%s>",user.getTokenDevice()));
+            final String token = TokenUtil.sanitizeTokenString(String.format("<%s>",toUser.getTokenDevice()));
 
             SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(token, "com.ds.Guard", payload);
             final PushNotificationFuture<SimpleApnsPushNotification, PushNotificationResponse<SimpleApnsPushNotification>>
@@ -268,6 +288,8 @@ public class UserController {
                     pushNotificationResponse.getTokenInvalidationTimestamp().ifPresent(timestamp -> {
                         System.out.println("\t…and the token is invalid as of " + timestamp);
                     });
+
+                    throw new IllegalStateException("Notification rejected by the APNs gateway");
                 }
             } catch (final Exception e) {
                 System.err.println("Failed to send push notification.");
