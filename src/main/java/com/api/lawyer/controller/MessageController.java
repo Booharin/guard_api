@@ -2,7 +2,9 @@ package com.api.lawyer.controller;
 
 import com.api.lawyer.dto.ChatMessageDto;
 import com.api.lawyer.model.websocket.ChatMessage;
+import com.api.lawyer.model.websocket.ChatRoom;
 import com.api.lawyer.repository.ChatMessageRepository;
+import com.api.lawyer.repository.ChatRoomRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -29,6 +31,9 @@ public class MessageController {
     private ChatMessageRepository chatMessageRepository;
 
     @Autowired
+    private ChatRoomRepository chatRoomRepository;
+
+    @Autowired
     UserController userController;
 
     @MessageMapping("/chat/{roomId}/{recieverId}/sendMessage")
@@ -44,8 +49,12 @@ public class MessageController {
         mess.setDateCreated(new Timestamp(date.getTime()));
         mess.setSenderId(chatMessage.getSenderId());
         chatMessageRepository.save(mess);
-        messagingTemplate.convertAndSend(String.format("/topic/%s", recieverId), chatMessage);
 
+        ChatRoom chatRoom = chatRoomRepository.findFirstById(Integer.valueOf(roomId)).get();
+        chatRoom.setLastMessage(chatMessage.getContent());
+        chatRoomRepository.save(chatRoom);
+
+        messagingTemplate.convertAndSend(String.format("/topic/%s", recieverId), chatMessage);
         //Отправляем пуш-уведомление
         userController.sendPush(Integer.parseInt(recieverId),chatMessage.getSenderId(),chatMessage.getContent(),"chat");
     }
