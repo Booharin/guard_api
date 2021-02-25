@@ -28,6 +28,9 @@ public class MessageController {
     @Autowired
     private ChatMessageRepository chatMessageRepository;
 
+    @Autowired
+    UserController userController;
+
     @MessageMapping("/chat/{roomId}/{recieverId}/sendMessage")
     public void sendMessage(@DestinationVariable String roomId,
                             @DestinationVariable String recieverId,
@@ -42,5 +45,8 @@ public class MessageController {
         mess.setSenderId(chatMessage.getSenderId());
         chatMessageRepository.save(mess);
         messagingTemplate.convertAndSend(String.format("/topic/%s", recieverId), chatMessage);
+
+        //Отправляем пуш-уведомление
+        userController.sendPush(Integer.parseInt(recieverId),chatMessage.getSenderId(),chatMessage.getContent(),"chat");
     }
 }
