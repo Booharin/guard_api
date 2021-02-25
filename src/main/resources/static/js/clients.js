@@ -2,17 +2,11 @@ var buttonText = `<a href="#editClient" rel="modal:open">
 <img src="/img/pencil2.svg" class="edit-icon">
 </a>`
 
-var buttonPush = `<a href="#pushToClient" rel="modal:open">
-<img src="/img/envelope.svg" class="push-icon" width="30px">
-</a>`
-
 var saveButton = document.getElementById("saveButton")
-var pushButton = document.getElementById("pushButton")
 
 var editId = -1;
 
 saveButton.addEventListener('click', saveButtonSumbit)
-pushButton.addEventListener('click', pushButtonSumbit)
 
 var list = function() {
     console.log("begin")
@@ -131,40 +125,6 @@ function saveButtonSumbit() {
     }
 
     let json = collectAllFields();
-    xhr.send(json)
-}
-
-function collectPushData() {
-    let field = document.getElementById("pushMessage")
-
-    let json = JSON.stringify({"userId": parseInt(editId.textContent),"message": field.value})
-    console.log(json)
-    return json
-}
-
-function pushButtonSumbit() {
-    let token = sessionStorage.getItem("token")
-
-    console.log(editId)
-
-    let xhr = new XMLHttpRequest();
-    let url = URL + "users/push";
-    xhr.open("POST", url, true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.setRequestHeader("Authorization", `Bearer_${token}`);
-
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-            if(xhr.status === 200) {
-                alert("Sended")
-                getPage(URL + "admin/Clients")
-            } else {
-                alert("Error")
-            }
-        }
-    }
-
-    let json = collectPushData();
     xhr.send(json)
 }
 

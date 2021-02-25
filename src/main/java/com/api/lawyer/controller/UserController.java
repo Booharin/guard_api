@@ -227,7 +227,7 @@ public class UserController {
     }
 
     @PostMapping("/push")
-    public ResponseEntity push(@RequestBody PushDto params, Authentication authentication) {
+    public ResponseEntity push(@RequestBody PushDto params, Authentication authentication){
         int userId = ((JwtUser)authentication.getPrincipal()).getId();
         String result = sendPush(params.getUserId(),userId,params.getMessage(),"admin");
         Map<Object, Object> response = new HashMap<>();
@@ -275,29 +275,25 @@ public class UserController {
             final PushNotificationFuture<SimpleApnsPushNotification, PushNotificationResponse<SimpleApnsPushNotification>>
             sendNotificationFuture = apnsClient.sendNotification(pushNotification);
 
-            try {
-                final PushNotificationResponse<SimpleApnsPushNotification> pushNotificationResponse =
-                        sendNotificationFuture.get();
 
-                if (pushNotificationResponse.isAccepted()) {
-                    System.out.println("Push notification accepted by APNs gateway.");
-                } else {
-                    System.out.println("Notification rejected by the APNs gateway: " +
-                            pushNotificationResponse.getRejectionReason());
+            final PushNotificationResponse<SimpleApnsPushNotification> pushNotificationResponse =
+                    sendNotificationFuture.get();
 
-                    pushNotificationResponse.getTokenInvalidationTimestamp().ifPresent(timestamp -> {
-                        System.out.println("\t…and the token is invalid as of " + timestamp);
-                    });
+            if (pushNotificationResponse.isAccepted()) {
+                System.out.println("Push notification accepted by APNs gateway.");
+            } else {
+                System.out.println("Notification rejected by the APNs gateway: " +
+                        pushNotificationResponse.getRejectionReason());
 
-                    throw new IllegalStateException("Notification rejected by the APNs gateway");
-                }
-            } catch (final Exception e) {
-                System.err.println("Failed to send push notification.");
-                e.printStackTrace();
+                pushNotificationResponse.getTokenInvalidationTimestamp().ifPresent(timestamp -> {
+                    System.out.println("\t…and the token is invalid as of " + timestamp);
+                });
+
+                throw new IllegalStateException("Notification rejected by the APNs gateway");
             }
 
             return "ok";
-        } catch (IOException e)
+        } catch (Exception e)
         {
             throw new IllegalStateException(e.getMessage());
         }
