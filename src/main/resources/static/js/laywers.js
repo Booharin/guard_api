@@ -13,7 +13,7 @@ var list = function() {
     let token = sessionStorage.getItem("token")
 
     let xhr = new XMLHttpRequest();
-    let url = URL + "admin/lawyers";
+    let url = URL + "admin/lawyers?page=0&pageSize=1000";
     xhr.open("GET", url, true);
     xhr.setRequestHeader("Authorization", `Bearer_${token}`)
     console.log("sending request")
