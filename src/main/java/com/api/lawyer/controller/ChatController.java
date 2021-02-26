@@ -54,6 +54,9 @@ public class ChatController {
 
         List<ChatRoomDto> chatRoomDtos = new ArrayList<>();
         for (ChatRoom i : chatRooms){
+            List<ChatMessage> list_not_read = chatMessageRepository.findNotMyMessagesByChatId(i.getId(),id);
+            Integer cnt = list_not_read.size();
+
             chatRoomDtos.add(ChatRoomDto.builder()
                     .id(i.getId())
                     .appealId(i.getAppealId())
@@ -63,6 +66,7 @@ public class ChatController {
                     .userId(isLawyer ? i.getUserId() : i.getLawyerId())
                     .userLastName(isLawyer ? i.getUserLastName() : i.getLawyerLastName())
                     .userPhoto(isLawyer ? i.getUserPhoto() : i.getLawyerPhoto())
+                    .countNotReadMessage(cnt)
                     .build());
         }
         return chatRoomDtos;

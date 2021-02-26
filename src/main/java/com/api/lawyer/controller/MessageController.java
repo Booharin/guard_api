@@ -56,11 +56,14 @@ public class MessageController {
         mess.setRead(0);
         chatMessageRepository.save(mess);
 
-        ChatMessageFile chatMessageFile = new ChatMessageFile();
-        chatMessageFile.setChatMessageId(mess.getId());
-        chatMessageFile.setFilebase64(chatMessage.getFileBase64());
-        chatMessageFile.setFileName(chatMessage.getFileName());
-        chatMessageFileRepository.save(chatMessageFile);
+        if (chatMessage.getFileName()!=null && !chatMessage.getFileName().isEmpty() &&
+        chatMessage.getFileBase64()!=null && !chatMessage.getFileName().isEmpty()) {
+            ChatMessageFile chatMessageFile = new ChatMessageFile();
+            chatMessageFile.setChatMessageId(mess.getId());
+            chatMessageFile.setFilebase64(chatMessage.getFileBase64());
+            chatMessageFile.setFileName(chatMessage.getFileName());
+            chatMessageFileRepository.save(chatMessageFile);
+        }
 
         ChatRoom chatRoom = chatRoomRepository.findFirstById(Integer.valueOf(roomId)).get();
         chatRoom.setLastMessage(chatMessage.getContent());
