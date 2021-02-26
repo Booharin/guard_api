@@ -13,7 +13,7 @@ var list = function() {
     let token = sessionStorage.getItem("token")
 
     let xhr = new XMLHttpRequest();
-    let url = URL + "admin/lawyers";
+    let url = URL + "admin/lawyers?page=0&pageSize=1000";
     xhr.open("GET", url, true);
     xhr.setRequestHeader("Authorization", `Bearer_${token}`)
     console.log("sending request")
@@ -24,14 +24,23 @@ var list = function() {
             showLaywers(json)
 
             const editButton = document.getElementsByClassName("edit-icon")
+            const pushButton = document.getElementsByClassName("push-icon")
 
             for (let svg of editButton) {
                 svg.addEventListener('click', editEvent)
+            }
+            for (let svg of pushButton) {
+                svg.addEventListener('click', pushEvent)
             }
 
             function editEvent() {
                 editId = this.parentNode.parentNode.parentNode.childNodes[0].firstChild
                 setAllFields()
+                console.log(editId)
+            }
+
+            function pushEvent() {
+                editId = this.parentNode.parentNode.parentNode.childNodes[0].firstChild
                 console.log(editId)
             }
 
@@ -71,7 +80,7 @@ var list = function() {
             let countryCode = row.insertCell(6);
             let rating = row.insertCell(7);
 
-            id.innerHTML = lawyer.id
+            id.innerHTML = lawyer.id + " " + buttonPush
             name.innerHTML = lawyer.firstName
             surName.innerHTML = lawyer.lastName
             email.innerHTML = lawyer.email

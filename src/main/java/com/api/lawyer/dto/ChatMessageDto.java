@@ -5,6 +5,8 @@ public class ChatMessageDto {
     private String senderName;
     private String content;
     private Integer senderId;
+    private String fileName;
+    private String fileBase64;
 
     public Integer getSenderId() {
         return senderId;
@@ -30,4 +32,19 @@ public class ChatMessageDto {
         this.content = content;
     }
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getFileBase64() {
+        return fileBase64;
+    }
+
+    public void setFileBase64(String fileBase64) {
+        this.fileBase64 = fileBase64;
+    }
 }

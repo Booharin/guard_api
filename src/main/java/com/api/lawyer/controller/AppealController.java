@@ -8,6 +8,8 @@ import com.api.lawyer.repository.AppealCrudRepository;
 import com.api.lawyer.repository.CityRepository;
 import com.api.lawyer.repository.UserCityRepository;
 import com.api.lawyer.repository.UserRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -50,8 +52,8 @@ public class AppealController {
      * .../api/v1/appeal/client?id=1
      */
     @RequestMapping(value = "/client", method = RequestMethod.GET)
-    public List<AppealDto> getAllAppealsById(@RequestParam Integer id) {
-        List<Appeal> appealList = appealCrudRepository.findAllByClientId(id);
+    public List<AppealDto> getAllAppealsById(@RequestParam Integer id, @RequestParam Integer page, @RequestParam Integer pageSize) {
+        List<Appeal> appealList = appealCrudRepository.findAllByClientId(id, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "id")));
         Optional<User> user = userRepository.findUserById(id);
         if (user.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");

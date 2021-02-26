@@ -1,6 +1,7 @@
 package com.api.lawyer.repository;
 
 import com.api.lawyer.model.User;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -22,6 +23,7 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     List<User> findAllByIdIn(List<Integer> id);
     
     List<User> findAllByRole(String role);
+    List<User> findAllByRole(String role, Pageable pageable);
 
     User findFirstByEmail(String email);
 

@@ -4,6 +4,8 @@ import com.api.lawyer.dto.AdminDto;
 import com.api.lawyer.dto.UserProfileDto;
 import com.api.lawyer.model.*;
 import com.api.lawyer.repository.*;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -89,8 +91,8 @@ public class AdminController {
      *
      */
     @GetMapping("/lawyers")
-    public Map<String, List<UserProfileDto>> getAllLawyers() {
-        List<User> users = userRepository.findAllByRole("ROLE_LAWYER");
+    public Map<String, List<UserProfileDto>> getAllLawyers(@RequestParam Integer page, @RequestParam Integer pageSize) {
+        List<User> users = userRepository.findAllByRole("ROLE_LAWYER", PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "id")));
         List<UserProfileDto> lawyers = users
                 .stream()
                 .map(UserProfileDto::new)
@@ -118,8 +120,8 @@ public class AdminController {
      *
      */
     @GetMapping("/clients")
-    public Map<String, List<UserProfileDto>> getAllClients() {
-        List<User> users = userRepository.findAllByRole("ROLE_CLIENT");
+    public Map<String, List<UserProfileDto>> getAllClients(@RequestParam Integer page, @RequestParam Integer pageSize) {
+        List<User> users = userRepository.findAllByRole("ROLE_CLIENT",PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "id")));
         List<UserProfileDto> clients = users
                 .stream()
                 .map(UserProfileDto::new)

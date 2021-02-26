@@ -16,6 +16,7 @@ public class ChatRoomDto {
     private String  userFirstName;
     private String  userLastName;
     private String  userPhoto;
+    private Integer countNotReadMessage;
 
     public Integer getId() {
         return id;
@@ -79,5 +80,13 @@ public class ChatRoomDto {
 
     public void setUserPhoto(String userPhoto) {
         this.userPhoto = userPhoto;
+    }
+
+    public Integer getCountNotReadMessage() {
+        return countNotReadMessage;
+    }
+
+    public void setCountNotReadMessage(Integer countNotReadMessage) {
+        this.countNotReadMessage = countNotReadMessage;
     }
 }

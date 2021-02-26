@@ -15,6 +15,8 @@ public class Review {
     private Integer senderId;
     private Integer receiverId;
     private Timestamp dateCreated;
+    private Integer negative;
+
     public Review() {}
     
     public Timestamp getDateCreated() {
@@ -63,5 +65,13 @@ public class Review {
     
     public void setReceiverId(Integer receiverId) {
         this.receiverId = receiverId;
+    }
+
+    public Integer getNegative() {
+        return negative;
+    }
+
+    public void setNegative(Integer negative) {
+        this.negative = negative;
     }
 }
