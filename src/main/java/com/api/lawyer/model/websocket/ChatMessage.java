@@ -27,5 +27,6 @@ public class ChatMessage {
     private Timestamp dateCreated;
     private String senderName;
     private String content;
+    private Integer read;
     //private String fileUrl;
 }

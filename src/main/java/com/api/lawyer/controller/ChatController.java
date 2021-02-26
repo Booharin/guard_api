@@ -8,24 +8,24 @@ import com.api.lawyer.model.User;
 import com.api.lawyer.model.websocket.ChatMessage;
 import com.api.lawyer.model.websocket.ChatRoom;
 import com.api.lawyer.repository.*;
+import com.api.lawyer.security.jwt.JwtUser;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -123,5 +123,20 @@ public class ChatController {
     public void deleteConversation(@RequestParam Integer conversationId){
         Optional<ChatRoom> conversation = chatRoomRepository.findFirstById(conversationId);
         conversation.ifPresent(chatRoomRepository::delete);
+    }
+
+    @GetMapping("/setread")
+    public ResponseEntity setRead(@RequestParam Integer chatId, Authentication authentication){
+        int userId = ((JwtUser)authentication.getPrincipal()).getId();
+        List<ChatMessage> list = chatMessageRepository.findNotMyMessagesByChatId(chatId, userId);
+
+        for (ChatMessage mess: list) {
+            mess.setRead(1);
+            chatMessageRepository.save(mess);
+        }
+
+        Map<Object, Object> response = new HashMap<>();
+        response.put("result", "OK");
+        return ResponseEntity.ok(response);
     }
 }

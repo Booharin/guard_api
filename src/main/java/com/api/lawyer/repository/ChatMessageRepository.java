@@ -1,8 +1,10 @@
 package com.api.lawyer.repository;
 
 import com.api.lawyer.dto.ChatMessageDto;
+import com.api.lawyer.model.User;
 import com.api.lawyer.model.websocket.ChatMessage;
 import com.api.lawyer.model.websocket.MessageStatus;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
@@ -12,4 +14,7 @@ public interface ChatMessageRepository extends CrudRepository<ChatMessage, Strin
 
     Optional<ChatMessage> findById(Integer id);
     List<ChatMessage> findAllByChatId(Integer chatId);
+
+    @Query( value = "select * from chat_message where chat_id = ?1 and coalesce(sender_id,0) != ?2", nativeQuery = true)
+    List<ChatMessage> findNotMyMessagesByChatId(Integer chatId, Integer userId);
 }
