@@ -21,6 +21,7 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     User findClientByAppealId(Integer appealId);
     
     List<User> findAllByIdIn(List<Integer> id);
+    List<User> findAllByIdIn(List<Integer> id, Pageable pageable);
     
     List<User> findAllByRole(String role);
     List<User> findAllByRole(String role, Pageable pageable);

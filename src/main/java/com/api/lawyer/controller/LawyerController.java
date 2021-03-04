@@ -4,6 +4,8 @@ import com.api.lawyer.dto.AppealDto;
 import com.api.lawyer.dto.LawyerProfileDto;
 import com.api.lawyer.model.*;
 import com.api.lawyer.repository.*;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -80,12 +82,12 @@ public class LawyerController {
     }
     
     @GetMapping("/allappealcity")
-    public List<AppealDto> getAllAppealsByCity(@RequestParam String cityTitle) {
+    public List<AppealDto> getAllAppealsByCity(@RequestParam String cityTitle, @RequestParam Integer page, @RequestParam Integer pageSize) {
         List<AppealDto> result = new ArrayList<>();
         Optional<City> optionalCity = cityRepository.findCityByTitle(cityTitle);
         if(optionalCity.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "City not found");
-        appealCrudRepository.findAllByCityCode(optionalCity.get().getCityCode()).forEach(it -> {
+        appealCrudRepository.findAllByCityCode(optionalCity.get().getCityCode(), PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "id"))).forEach(it -> {
             City city = cityRepository.findCityByCityCode(it.getCityCode());
             result.add(new AppealDto(it, city.getTitle()));
         });

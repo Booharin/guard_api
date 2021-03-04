@@ -18,9 +18,10 @@ public interface AppealCrudRepository extends CrudRepository<Appeal, Integer> {
     @Query( value = "select * from appeal join city on city.title = ?1 and appeal.city_code = city.city_code and appeal.sub_issue_code in ?2",
             nativeQuery = true)
     List<Appeal> findAllByCityTitleAndIssueCodeListIn(String cityTitle, List<Integer> issueCodeList);
+    List<Appeal> findAllByCityTitleAndIssueCodeListIn(String cityTitle, List<Integer> issueCodeList, Pageable pageable);
 
     List<Appeal> findAll();
     
     List<Appeal> findAllByCityCode(Integer cityCode);
-    
+    List<Appeal> findAllByCityCode(Integer cityCode, Pageable pageable);
 }
