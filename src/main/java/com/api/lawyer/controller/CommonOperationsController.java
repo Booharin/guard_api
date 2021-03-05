@@ -237,7 +237,7 @@ public class CommonOperationsController {
         List<Integer> ListLawyersByIssue = userRepository.findAllLawyer(issueCode);
         Set<Integer> listLawyers = new HashSet<Integer>(listUsersByCity);
         listLawyers.retainAll(ListLawyersByIssue);
-        List<User> lawyers = userRepository.findAllByIdIn(new ArrayList<Integer>(listLawyers), PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "average_rate").and(Sort.by(Sort.Direction.ASC, "id"))));
+        List<User> lawyers = userRepository.findAllByIdIn(new ArrayList<Integer>(listLawyers), PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "averageRate").and(Sort.by(Sort.Direction.ASC, "id"))));
         List<LawyerProfileDto> result = lawyers.stream().map(LawyerProfileDto::new).collect(Collectors.toList());
         result.forEach(it -> it.setReviewList(reviewRepository.findAllByReceiverId(it.getId())));
         result.forEach(it -> {

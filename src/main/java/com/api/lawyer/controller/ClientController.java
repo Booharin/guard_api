@@ -82,7 +82,7 @@ public class ClientController {
         if (optionalCity.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "City not found");
         City city  = optionalCity.get();
-        List<User> lawyers = userRepository.findAllByRole("ROLE_LAWYER", PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "average_rate").and(Sort.by(Sort.Direction.ASC,"id"))));
+        List<User> lawyers = userRepository.findAllByRole("ROLE_LAWYER", PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "averageRate").and(Sort.by(Sort.Direction.ASC,"id"))));
         List<UserCity> q = userCityRepository.findAllByCityCodeAndUserIdIn(city.getCityCode(), lawyers.stream().map(User::getId).collect(Collectors.toList()));
         lawyers = userRepository.findAllByIdIn(q.stream().map(UserCity::getUserId).collect(Collectors.toList()));
         List<LawyerProfileDto> result = lawyers.stream().map(LawyerProfileDto::new).collect(Collectors.toList());
