@@ -15,6 +15,7 @@ public class SubIssueType {
     private String subtitle;
     private String subtitleEn;
     private Integer issueCode;
+    private byte[] image;
 
     public SubIssueType() {}
 
@@ -72,5 +73,13 @@ public class SubIssueType {
     
     public void setIssueCode(Integer issue_code) {
         this.issueCode = issue_code;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 }

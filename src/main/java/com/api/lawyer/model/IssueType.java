@@ -15,6 +15,8 @@ public class IssueType {
     private String subtitle;
     private String subtitleEn;
     private String locale;
+    private byte[] image;
+
     public IssueType() {}
 
     public String getTitleEn() {
@@ -72,5 +74,13 @@ public class IssueType {
 
     public void setLocale(String locale) {
         this.locale = locale;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 }

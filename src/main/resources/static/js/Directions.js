@@ -52,6 +52,9 @@ function fillDir() {
                 child.value = findActiveIssue().titleEn
             } else if (child.name === "description-en") {
                 child.value = findActiveIssue().subtitleEn
+            } else if (child.name === "image-view")
+            {
+                child.setAttribute('src', 'data:image/png;base64,'+findActiveIssue().image);
             }
         }
     }
@@ -71,6 +74,9 @@ function fillSubDir() {
                 child.value = findActiveSubIssue().titleEn
             } else if (child.name === "description-en") {
                 child.value = findActiveSubIssue().subtitleEn
+            } else if (child.name === "image-view")
+            {
+              child.setAttribute('src', 'data:image/png;base64,'+findActiveIssue().image);
             }
         }
     }
@@ -85,7 +91,7 @@ function editIssue(button) {
 
     xhr.open("POST", url, true);
     xhr.setRequestHeader("Authorization", `Bearer_${token}`)
-    xhr.setRequestHeader("Content-Type", "application/json");
+    //xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
@@ -97,16 +103,21 @@ function editIssue(button) {
         }
     };
 
-    let issueName = returnPreviousSiblingNTimes(button, 22)
-    let issueNameEn = returnPreviousSiblingNTimes(button, 18)
-    let locale = returnPreviousSiblingNTimes(button, 6)
-    let subtitle = returnPreviousSiblingNTimes(button, 14)
-    let subtitleEn = returnPreviousSiblingNTimes(button, 10)
-    let issueCode = returnPreviousSiblingNTimes(button, 2)
+    let issueName = returnPreviousSiblingNTimes(button, 28)
+    let issueNameEn = returnPreviousSiblingNTimes(button, 24)
+    let locale = returnPreviousSiblingNTimes(button, 12)
+    let subtitle = returnPreviousSiblingNTimes(button, 20)
+    let subtitleEn = returnPreviousSiblingNTimes(button, 16)
+    let issueCode = returnPreviousSiblingNTimes(button, 8)
 
     let data = JSON.stringify({ "title": issueName, "locale": locale, "subtitle": subtitle, "issueCode": issueCode, "id": findActiveIssue().id, "titleEn": issueNameEn, "subtitleEn": subtitleEn })
-    console.log(data)
-    xhr.send(data);
+
+    var formData = new FormData();
+    var image = $('#imageEditIssue').prop('files');
+    formData.append("image", image[0]);
+    formData.append("data", data);
+
+    xhr.send(formData);
 }
 
 
@@ -117,7 +128,7 @@ function editSubIssue(button) {
 
     xhr.open("POST", url, true);
     xhr.setRequestHeader("Authorization", `Bearer_${token}`)
-    xhr.setRequestHeader("Content-Type", "application/json");
+    //xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
@@ -129,17 +140,22 @@ function editSubIssue(button) {
         }
     };
 
-    let issueNameRu = returnPreviousSiblingNTimes(button, 18)
-    let issueNameEn = returnPreviousSiblingNTimes(button, 14)
-    let descriptionRu = returnPreviousSiblingNTimes(button, 10)
-    let descriptionEn = returnPreviousSiblingNTimes(button, 6)
-    let subIssueCode = returnPreviousSiblingNTimes(button, 2)
+    let issueNameRu = returnPreviousSiblingNTimes(button, 24)
+    let issueNameEn = returnPreviousSiblingNTimes(button, 20)
+    let descriptionRu = returnPreviousSiblingNTimes(button, 16)
+    let descriptionEn = returnPreviousSiblingNTimes(button, 12)
+    let subIssueCode = returnPreviousSiblingNTimes(button, 8)
     let issueCode = findActiveIssue().issueCode
 
     let data = JSON.stringify({ "title": issueNameRu, "subtitle": descriptionRu, 
     "issueCode": issueCode, "subIssueCode": subIssueCode, "id": findActiveSubIssue().id, "titleEn": issueNameEn, "subtitleEn": descriptionEn })
-    console.log(data)
-    xhr.send(data);
+
+    var formData = new FormData();
+    var image = $('#imageEditSubIssue').prop('files');
+    formData.append("image", image[0]);
+    formData.append("data", data);
+
+    xhr.send(formData);
 }
 
 function saveIssue(button) {
@@ -149,7 +165,7 @@ function saveIssue(button) {
 
   xhr.open("POST", url, true);
   xhr.setRequestHeader("Authorization", `Bearer_${token}`)
-  xhr.setRequestHeader("Content-Type", "application/json");
+  //xhr.setRequestHeader("Content-Type", "multipart/form-data");
   xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
           if (xhr.status === 200) {
@@ -163,15 +179,21 @@ function saveIssue(button) {
       }
   };
 
-    let issueNameRu = returnPreviousSiblingNTimes(button, 12)
-    let issueNameEn = returnPreviousSiblingNTimes(button, 10)
-    let subtitleRu = returnPreviousSiblingNTimes(button, 8)
-    let subtitleEn = returnPreviousSiblingNTimes(button, 6)
-    let issueCode = returnPreviousSiblingNTimes(button, 2)
+    let issueNameRu = returnPreviousSiblingNTimes(button, 16)
+    let issueNameEn = returnPreviousSiblingNTimes(button, 14)
+    let subtitleRu = returnPreviousSiblingNTimes(button, 12)
+    let subtitleEn = returnPreviousSiblingNTimes(button, 10)
+    let issueCode = returnPreviousSiblingNTimes(button, 6)
 
-    let data = JSON.stringify({ "title": issueNameRu, "locale": sessionStorage.getItem("locale"), "subtitle": subtitleRu, "issueCode": issueCode, "titleEn": issueNameEn, "subtitleEn": subtitleEn })
+    let data = JSON.stringify({"title": issueNameRu, "locale": sessionStorage.getItem("locale"), "subtitle": subtitleRu, "issueCode": issueCode, "titleEn": issueNameEn, "subtitleEn": subtitleEn })
     console.log(data)
-    xhr.send(data);
+
+    var formData = new FormData();
+    var image = $('#imageAddIssue').prop('files');
+    formData.append("image", image[0]);
+    formData.append("data", data);
+
+    xhr.send(formData);
 }
 
 function saveSubIssue(button) {
@@ -180,7 +202,7 @@ function saveSubIssue(button) {
   let token = sessionStorage.getItem("token")
 
   xhr.open("POST", url, true);
-  xhr.setRequestHeader("Content-Type", "application/json");
+  //xhr.setRequestHeader("Content-Type", "application/json");
   xhr.setRequestHeader("Authorization", `Bearer_${token}`)
   xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
@@ -195,17 +217,22 @@ function saveSubIssue(button) {
       }
   };
 
-    let issueNameRu = returnPreviousSiblingNTimes(button, 14)
-    let issueNameEn = returnPreviousSiblingNTimes(button, 12)
-    let descriptionRu = returnPreviousSiblingNTimes(button, 8)
-    let descriptionEn = returnPreviousSiblingNTimes(button, 6)
-    let subIssueCode = returnPreviousSiblingNTimes(button, 2)
+    let issueNameRu = returnPreviousSiblingNTimes(button, 18)
+    let issueNameEn = returnPreviousSiblingNTimes(button, 16)
+    let descriptionRu = returnPreviousSiblingNTimes(button, 12)
+    let descriptionEn = returnPreviousSiblingNTimes(button, 10)
+    let subIssueCode = returnPreviousSiblingNTimes(button, 6)
     let issueCode = findActiveIssue().issueCode
 
     let data = JSON.stringify({ "title": issueNameRu, "subtitle": descriptionRu, "issueCode": issueCode, "subIssueCode": subIssueCode, "titleEn": issueNameEn, "subtitleEn": descriptionEn })
-    console.log(data)
-    xhr.send(data);
-    }
+
+    var formData = new FormData();
+    var image = $('#imageAddSubIssue').prop('files');
+    formData.append("image", image[0]);
+    formData.append("data", data);
+
+    xhr.send(formData);
+ }
 
 function deleteIssue() {
     let xhr = new XMLHttpRequest();
