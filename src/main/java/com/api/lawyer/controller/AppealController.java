@@ -82,6 +82,7 @@ public class AppealController {
             appeal.setAppealDescription(newAppeal.getAppealDescription());
             appeal.setDateCreated(newAppeal.getDateCreated());
             appeal.setSubIssueCode(newAppeal.getSubIssueCode());
+            appeal.setCost(newAppeal.getCost());
             appealCrudRepository.save(appeal);
         }, () -> {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
@@ -130,6 +131,7 @@ public class AppealController {
             appeal1.setSubIssueCode(appeal.getSubIssueCode());
             appeal1.setTitle(appeal.getTitle());
             appeal1.setAppealDescription(appeal.getAppealDescription());
+            appeal1.setCost(appeal.getCost());
             appealCrudRepository.save(appeal1);
         }, () -> {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Appeal not found");

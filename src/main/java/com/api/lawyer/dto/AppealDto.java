@@ -2,6 +2,7 @@ package com.api.lawyer.dto;
 
 import com.api.lawyer.model.Appeal;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 public class AppealDto {
@@ -13,6 +14,7 @@ public class AppealDto {
     private Integer subIssueCode;
     private String cityTitle;
     private Boolean isLawyerChoosed;
+    private BigDecimal cost;
 
     public AppealDto(Appeal appeal, String cityTitle) {
         this.id = appeal.getId();
@@ -23,6 +25,7 @@ public class AppealDto {
         this.subIssueCode = appeal.getSubIssueCode();
         this.isLawyerChoosed = appeal.getLawyerChoosed();
         this.cityTitle = cityTitle;
+        this.cost = appeal.getCost();
     }
 
     public Integer getId() {
@@ -87,5 +90,13 @@ public class AppealDto {
 
     public void setLawyerChoosed(Boolean lawyerChoosed) {
         isLawyerChoosed = lawyerChoosed;
+    }
+
+    public BigDecimal getCost() {
+        return cost;
+    }
+
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
     }
 }
