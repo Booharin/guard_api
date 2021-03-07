@@ -66,10 +66,10 @@ public class ChatController {
                     .appealId(i.getAppealId())
                     .dateCreated(i.getDateCreated())
                     .lastMessage(i.getLastMessage())
-                    .userFirstName(isLawyer ? i.getUserFirstName() : i.getLawyerFirstName())
+                    .userFirstName(isLawyer ? i.getUser().getFirstName() : i.getLawyer().getFirstName())
                     .userId(isLawyer ? i.getUserId() : i.getLawyerId())
-                    .userLastName(isLawyer ? i.getUserLastName() : i.getLawyerLastName())
-                    .userPhoto(isLawyer ? i.getUserPhoto() : i.getLawyerPhoto())
+                    .userLastName(isLawyer ? i.getUser().getLastName() : i.getLawyer().getLastName())
+                    .userPhoto(isLawyer ? i.getUser().getPhoto() : i.getLawyer().getPhoto())
                     .countNotReadMessage(cnt)
                     .build());
         }
@@ -79,9 +79,6 @@ public class ChatController {
 
     @PostMapping("/createconversationByAppeal")
     public void createConversationByAppeal(@RequestParam Integer lawyerId, @RequestParam Integer clientId, @RequestParam String appealId){
-        User lawyer = userRepository.findUserById(lawyerId).get();
-        User client = userRepository.findUserById(clientId).get();
-
         Date date = new Date();
         ChatRoom chatRoom = new ChatRoom();
         chatRoom.setDateCreated(new Timestamp(date.getTime()));
@@ -91,34 +88,19 @@ public class ChatController {
             chatRoom.setAppealId(Integer.valueOf(appealId));
 
         chatRoom.setUserId(Integer.valueOf(clientId));
-        chatRoom.setUserFirstName(client.getFirstName());
-        chatRoom.setUserLastName(client.getLastName());
-        chatRoom.setUserPhoto(client.getPhoto());
         chatRoom.setLawyerId(Integer.valueOf(lawyerId));
-        chatRoom.setLawyerFirstName(lawyer.getFirstName());
-        chatRoom.setLawyerLastName(lawyer.getLastName());
-        chatRoom.setLawyerPhoto(lawyer.getPhoto());
         chatRoomRepository.save(chatRoom);
     }
 
     @PostMapping("/createconversation")
     public void createConversation(@RequestParam Integer lawyerId, @RequestParam Integer clientId){
-        User lawyer = userRepository.findUserById(lawyerId).get();
-        User client = userRepository.findUserById(clientId).get();
-
         Date date = new Date();
         ChatRoom chatRoom = new ChatRoom();
         chatRoom.setDateCreated(new Timestamp(date.getTime()));
         chatRoom.setLastMessage(StringUtils.EMPTY);
 
         chatRoom.setUserId(Integer.valueOf(clientId));
-        chatRoom.setUserFirstName(client.getFirstName());
-        chatRoom.setUserLastName(client.getLastName());
-        chatRoom.setUserPhoto(client.getPhoto());
         chatRoom.setLawyerId(Integer.valueOf(lawyerId));
-        chatRoom.setLawyerFirstName(lawyer.getFirstName());
-        chatRoom.setLawyerLastName(lawyer.getLastName());
-        chatRoom.setLawyerPhoto(lawyer.getPhoto());
         chatRoomRepository.save(chatRoom);
     }
 
