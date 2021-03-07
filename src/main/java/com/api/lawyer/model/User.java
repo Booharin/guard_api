@@ -26,6 +26,7 @@ public class User {
     private Double averageRate;
     private String role;
     private String tokenDevice;
+    private Integer Complaint;
     
     public User() {}
     
@@ -124,5 +125,13 @@ public class User {
 
     public void setTokenDevice(String tokenDevice) {
         this.tokenDevice = tokenDevice;
+    }
+
+    public Integer getComplaint() {
+        return Complaint;
+    }
+
+    public void setComplaint(Integer complaint) {
+        Complaint = complaint;
     }
 }

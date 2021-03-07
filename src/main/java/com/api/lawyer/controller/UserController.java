@@ -235,6 +235,22 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/complain")
+    public ResponseEntity complain(@RequestParam Integer userId){
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            Integer cnt = user.getComplaint();
+            if (cnt == null) cnt = 0;
+            user.setComplaint(cnt+1);
+            userRepository.save(user);
+            Map<Object, Object> response = new HashMap<>();
+            response.put("result", "OK");
+            return ResponseEntity.ok(response);
+        } else
+            throw new IllegalStateException("User not found");
+    }
+
     public String sendPush(int toUserId, int fromUserId, String message, String categoryName)
     {
         try {
