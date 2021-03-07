@@ -7,7 +7,12 @@ import com.api.lawyer.repository.IssueRepository;
 import com.api.lawyer.repository.SubIssueRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,12 +29,31 @@ import java.util.Optional;
 public class IssueController {
 
     private final IssueRepository issueRepository;
-
     private final SubIssueRepository subIssueRepository;
 
     public IssueController(IssueRepository issueRepository, SubIssueRepository subIssueRepository) {
         this.issueRepository = issueRepository;
         this.subIssueRepository = subIssueRepository;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/imageissue", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
+    public byte[] imageIssue(@RequestParam Integer id){
+        IssueType issueType = issueRepository.findById(id).get();
+        if (issueType != null)
+            return issueType.getImage();
+        else
+            return null;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/imagesubissue", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
+    public byte[] imageSubIssue(@RequestParam Integer id){
+        SubIssueType subIssueType = subIssueRepository.findById(id).get();
+        if (subIssueType != null)
+            return subIssueType.getImage();
+        else
+            return null;
     }
     
     @PostMapping("/issue")
