@@ -77,4 +77,36 @@ function pushButtonSumbit() {
     xhr.send(json)
 }
 
+var buttonDeleteText = `<a>
+<img src="/img/trash.svg" class="delete-icon" width="30px">
+</a>`
+
+function deleteUser(userId, page) {
+    if (!confirm("Удалить пользователя с ID="+userId.textContent+"?"))
+        return;
+
+    let token = sessionStorage.getItem("token")
+
+    console.log(editId)
+
+    let xhr = new XMLHttpRequest();
+    let url = URL + "users/delete?id="+userId.textContent;
+    xhr.open("GET", url, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Authorization", `Bearer_${token}`);
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            if(xhr.status === 200) {
+                alert("Deleted")
+                getPage(URL + page)
+            } else {
+                alert("Error")
+            }
+        }
+    }
+    let json = collectAllFields();
+    xhr.send(json)
+}
+
 common()

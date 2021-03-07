@@ -25,12 +25,16 @@ var list = function() {
 
             const editButton = document.getElementsByClassName("edit-icon")
             const pushButton = document.getElementsByClassName("push-icon")
+            const deleteButton = document.getElementsByClassName("delete-icon")
 
             for (let svg of editButton) {
                 svg.addEventListener('click', editEvent)
             }
             for (let svg of pushButton) {
                 svg.addEventListener('click', pushEvent)
+            }
+            for (let svg of deleteButton) {
+                svg.addEventListener('click', deleteEvent)
             }
 
             function editEvent() {
@@ -42,6 +46,12 @@ var list = function() {
             function pushEvent() {
                 editId = this.parentNode.parentNode.parentNode.childNodes[0].firstChild
                 console.log(editId)
+            }
+
+            function deleteEvent() {
+                editId = this.parentNode.parentNode.parentNode.childNodes[0].firstChild
+                console.log(editId)
+                deleteUser(editId,"admin/Lawyers")
             }
 
             function setAllFields() {
@@ -79,15 +89,17 @@ var list = function() {
             let cityCode = row.insertCell(5);
             let countryCode = row.insertCell(6);
             let rating = row.insertCell(7);
+            let actions = row.insertCell(8);
 
-            id.innerHTML = lawyer.id + " " + buttonPush
+            id.innerHTML = lawyer.id
             name.innerHTML = lawyer.firstName
             surName.innerHTML = lawyer.lastName
             email.innerHTML = lawyer.email
             phone.innerHTML = lawyer.phoneNumber
             cityCode.innerHTML = lawyer.cityCode
             countryCode.innerHTML = lawyer.countryCode
-            rating.innerHTML = lawyer.averageRate + " " + buttonText
+            rating.innerHTML = lawyer.averageRate
+            actions.innerHTML = buttonPush + buttonText + buttonDeleteText
         });
     }
     xhr.send()

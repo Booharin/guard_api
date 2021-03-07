@@ -314,4 +314,17 @@ public class UserController {
             throw new IllegalStateException(e.getMessage());
         }
     }
+
+    @GetMapping("/delete")
+    public ResponseEntity delete(@RequestParam Integer id){
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            userRepository.delete(user);
+            Map<Object, Object> response = new HashMap<>();
+            response.put("result", "OK");
+            return ResponseEntity.ok(response);
+        } else
+            throw new IllegalStateException("User not found");
+    }
 }
