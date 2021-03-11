@@ -23,6 +23,7 @@ public class UserProfileDto {
     private List<SubIssueType> subIssueTypes;
     private List<Integer> cityCode;
     private List<Integer> countryCode;
+    private Integer complaint;
     
     public UserProfileDto(User user){
         this.id = user.getId();
@@ -34,6 +35,7 @@ public class UserProfileDto {
         this.role = user.getRole();
         this.averageRate = user.getAverageRate();
         this.dateCreated = user.getDateCreated();
+        this.complaint = user.getComplaint();
     }
     
     public UserProfileDto() {}
@@ -140,5 +142,13 @@ public class UserProfileDto {
     
     public void setAverageRate(Double averageRate) {
         this.averageRate = averageRate;
+    }
+
+    public Integer getComplaint() {
+        return complaint;
+    }
+
+    public void setComplaint(Integer complaint) {
+        this.complaint = complaint;
     }
 }

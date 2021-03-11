@@ -39,7 +39,7 @@ public class IssueController {
     @ResponseBody
     @RequestMapping(value = "/imageissue", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
     public byte[] imageIssue(@RequestParam Integer id){
-        IssueType issueType = issueRepository.findById(id).get();
+        IssueType issueType = issueRepository.findByIssueCode(id).get();
         if (issueType != null)
             return issueType.getImage();
         else
@@ -49,7 +49,7 @@ public class IssueController {
     @ResponseBody
     @RequestMapping(value = "/imagesubissue", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
     public byte[] imageSubIssue(@RequestParam Integer id){
-        SubIssueType subIssueType = subIssueRepository.findById(id).get();
+        SubIssueType subIssueType = subIssueRepository.findBySubIssueCode(id).get();
         if (subIssueType != null)
             return subIssueType.getImage();
         else
