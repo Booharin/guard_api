@@ -14,6 +14,7 @@ import java.util.List;
 public interface AppealCrudRepository extends CrudRepository<Appeal, Integer> {
     
     List<Appeal> findAllByClientId(Integer clientId, Pageable pageable);
+    List<Appeal> findAllByClientId(Integer clientId);
 
     @Query( value = "select * from appeal a join city c on c.title = ?1 and a.city_code = c.city_code and a.sub_issue_code in ?2",
             nativeQuery = true)

@@ -4,8 +4,10 @@ import com.api.lawyer.bucket.BucketName;
 import com.api.lawyer.dto.ChatMessageDto;
 import com.api.lawyer.dto.PushDto;
 import com.api.lawyer.filestore.FileStore;
+import com.api.lawyer.model.Appeal;
 import com.api.lawyer.model.User;
 import com.api.lawyer.model.websocket.ChatMessage;
+import com.api.lawyer.repository.AppealCrudRepository;
 import com.api.lawyer.repository.ChatMessageRepository;
 import com.api.lawyer.repository.UserRepository;
 import com.api.lawyer.security.jwt.JwtUser;
@@ -49,6 +51,7 @@ public class UserController {
     private final FileStore fileStore;
     private final UserServiceImpl userServiceImpl;
     private final UserRepository userRepository;
+    private final AppealCrudRepository appealCrudRepository;
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
@@ -56,10 +59,11 @@ public class UserController {
     @Autowired
     private ChatMessageRepository chatMessageRepository;
 
-    public UserController(UserServiceImpl userServiceImpl, UserRepository userRepository, FileStore fileStore) {
+    public UserController(UserServiceImpl userServiceImpl, UserRepository userRepository, FileStore fileStore, AppealCrudRepository appealCrudRepository) {
         this.userServiceImpl = userServiceImpl;
         this.fileStore = fileStore;
         this.userRepository = userRepository;
+        this.appealCrudRepository = appealCrudRepository;
     }
 
     @PostMapping(
@@ -321,6 +325,12 @@ public class UserController {
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             userRepository.delete(user);
+
+            List<Appeal> listAppeal = appealCrudRepository.findAllByClientId(user.getId());
+            for (Appeal item: listAppeal) {
+                appealCrudRepository.delete(item);
+            }
+
             Map<Object, Object> response = new HashMap<>();
             response.put("result", "OK");
             return ResponseEntity.ok(response);
