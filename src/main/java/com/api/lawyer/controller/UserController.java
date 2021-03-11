@@ -272,17 +272,19 @@ public class UserController {
             final ApnsPayloadBuilder payloadBuilder = new SimpleApnsPayloadBuilder();
             payloadBuilder.setAlertBody(message);
 
-            StringBuilder alertTitle = new StringBuilder();
-            if (fromUser.getFirstName() != null && !fromUser.getFirstName().isEmpty())
-                alertTitle.append(fromUser.getFirstName());
-            if (fromUser.getLastName() != null && !fromUser.getLastName().isEmpty()) {
-                if (alertTitle.length()>0) alertTitle.append(" ");
-                alertTitle.append(fromUser.getLastName());
-            }
-            if (alertTitle.length() == 0)
-                alertTitle.append(fromUser.getEmail());
+            if (categoryName.equals("chat")) {
+                StringBuilder alertTitle = new StringBuilder();
+                if (fromUser.getFirstName() != null && !fromUser.getFirstName().isEmpty())
+                    alertTitle.append(fromUser.getFirstName());
+                if (fromUser.getLastName() != null && !fromUser.getLastName().isEmpty()) {
+                    if (alertTitle.length() > 0) alertTitle.append(" ");
+                    alertTitle.append(fromUser.getLastName());
+                }
+                if (alertTitle.length() == 0)
+                    alertTitle.append(fromUser.getEmail());
 
-            payloadBuilder.setAlertTitle(alertTitle.toString());
+                payloadBuilder.setAlertTitle(alertTitle.toString());
+            }
 
             payloadBuilder.setBadgeNumber(1);
             payloadBuilder.setCategoryName(categoryName);
