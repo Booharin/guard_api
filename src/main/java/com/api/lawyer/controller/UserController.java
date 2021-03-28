@@ -4,9 +4,13 @@ import com.api.lawyer.bucket.BucketName;
 import com.api.lawyer.dto.ChatMessageDto;
 import com.api.lawyer.dto.PushDto;
 import com.api.lawyer.filestore.FileStore;
+import com.api.lawyer.model.Appeal;
 import com.api.lawyer.model.User;
 import com.api.lawyer.model.websocket.ChatMessage;
+import com.api.lawyer.model.websocket.ChatRoom;
+import com.api.lawyer.repository.AppealCrudRepository;
 import com.api.lawyer.repository.ChatMessageRepository;
+import com.api.lawyer.repository.ChatRoomRepository;
 import com.api.lawyer.repository.UserRepository;
 import com.api.lawyer.security.jwt.JwtUser;
 import com.api.lawyer.service.impl.BASE64DecodedMultipartFile;
@@ -49,17 +53,21 @@ public class UserController {
     private final FileStore fileStore;
     private final UserServiceImpl userServiceImpl;
     private final UserRepository userRepository;
+    private final AppealCrudRepository appealCrudRepository;
+    private final ChatRoomRepository chatRoomRepository;
+    private final ChatMessageRepository chatMessageRepository;
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
-    @Autowired
-    private ChatMessageRepository chatMessageRepository;
-
-    public UserController(UserServiceImpl userServiceImpl, UserRepository userRepository, FileStore fileStore) {
+    public UserController(UserServiceImpl userServiceImpl, UserRepository userRepository, FileStore fileStore, AppealCrudRepository appealCrudRepository,
+                          ChatRoomRepository chatRoomRepository, ChatMessageRepository chatMessageRepository) {
         this.userServiceImpl = userServiceImpl;
         this.fileStore = fileStore;
         this.userRepository = userRepository;
+        this.appealCrudRepository = appealCrudRepository;
+        this.chatRoomRepository = chatRoomRepository;
+        this.chatMessageRepository = chatMessageRepository;
     }
 
     @PostMapping(
@@ -235,6 +243,22 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/complain")
+    public ResponseEntity complain(@RequestParam Integer userId){
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            Integer cnt = user.getComplaint();
+            if (cnt == null) cnt = 0;
+            user.setComplaint(cnt+1);
+            userRepository.save(user);
+            Map<Object, Object> response = new HashMap<>();
+            response.put("result", "OK");
+            return ResponseEntity.ok(response);
+        } else
+            throw new IllegalStateException("User not found");
+    }
+
     public String sendPush(int toUserId, int fromUserId, String message, String categoryName)
     {
         try {
@@ -252,17 +276,19 @@ public class UserController {
             final ApnsPayloadBuilder payloadBuilder = new SimpleApnsPayloadBuilder();
             payloadBuilder.setAlertBody(message);
 
-            StringBuilder alertTitle = new StringBuilder();
-            if (fromUser.getFirstName() != null && !fromUser.getFirstName().isEmpty())
-                alertTitle.append(fromUser.getFirstName());
-            if (fromUser.getLastName() != null && !fromUser.getLastName().isEmpty()) {
-                if (alertTitle.length()>0) alertTitle.append(" ");
-                alertTitle.append(fromUser.getLastName());
-            }
-            if (alertTitle.length() == 0)
-                alertTitle.append(fromUser.getEmail());
+            if (categoryName.equals("chat")) {
+                StringBuilder alertTitle = new StringBuilder();
+                if (fromUser.getFirstName() != null && !fromUser.getFirstName().isEmpty())
+                    alertTitle.append(fromUser.getFirstName());
+                if (fromUser.getLastName() != null && !fromUser.getLastName().isEmpty()) {
+                    if (alertTitle.length() > 0) alertTitle.append(" ");
+                    alertTitle.append(fromUser.getLastName());
+                }
+                if (alertTitle.length() == 0)
+                    alertTitle.append(fromUser.getEmail());
 
-            payloadBuilder.setAlertTitle(alertTitle.toString());
+                payloadBuilder.setAlertTitle(alertTitle.toString());
+            }
 
             payloadBuilder.setBadgeNumber(1);
             payloadBuilder.setCategoryName(categoryName);
@@ -297,5 +323,42 @@ public class UserController {
         {
             throw new IllegalStateException(e.getMessage());
         }
+    }
+
+    @GetMapping("/delete")
+    public ResponseEntity delete(@RequestParam Integer id){
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            userRepository.delete(user);
+
+            List<Appeal> listAppeal = appealCrudRepository.findAllByClientId(user.getId());
+            for (Appeal item: listAppeal) {
+                appealCrudRepository.delete(item);
+            }
+
+            List<ChatRoom> listChatRoom = chatRoomRepository.findAllByUserId(user.getId());
+            for (ChatRoom item: listChatRoom)
+            {
+                chatRoomRepository.delete(item);
+            }
+
+            List<ChatRoom> listChatRoomLawyer = chatRoomRepository.findAllByLawyerId(user.getId());
+            for (ChatRoom item: listChatRoomLawyer)
+            {
+                chatRoomRepository.delete(item);
+            }
+
+            List<ChatMessage> listChatMessage = chatMessageRepository.findAllBySenderId(user.getId());
+            for (ChatMessage item: listChatMessage)
+            {
+                chatMessageRepository.delete(item);
+            }
+
+            Map<Object, Object> response = new HashMap<>();
+            response.put("result", "OK");
+            return ResponseEntity.ok(response);
+        } else
+            throw new IllegalStateException("User not found");
     }
 }

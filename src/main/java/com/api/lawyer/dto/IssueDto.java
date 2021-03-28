@@ -15,6 +15,7 @@ public class IssueDto {
     private String subtitleEn;
     private String locale;
     private List<SubIssueType> subIssueTypeList;
+    private byte[] image;
     
     public IssueDto(IssueType issueType) {
         this.id = issueType.getId();
@@ -24,6 +25,7 @@ public class IssueDto {
         this.locale = issueType.getLocale();
         this.subtitleEn = issueType.getSubtitleEn();
         this.titleEn = issueType.getTitleEn();
+        this.image = issueType.getImage();
     }
     
     public List<SubIssueType> getSubIssueTypeList() {
@@ -88,5 +90,13 @@ public class IssueDto {
     
     public void setLocale(String locale) {
         this.locale = locale;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 }

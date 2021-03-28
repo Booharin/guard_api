@@ -14,13 +14,14 @@ import java.util.List;
 public interface AppealCrudRepository extends CrudRepository<Appeal, Integer> {
     
     List<Appeal> findAllByClientId(Integer clientId, Pageable pageable);
-    
-    @Query( value = "select * from appeal join city on city.title = ?1 and appeal.city_code = city.city_code and appeal.sub_issue_code in ?2",
+    List<Appeal> findAllByClientId(Integer clientId);
+
+    @Query( value = "select * from appeal a join city c on c.title = ?1 and a.city_code = c.city_code and a.sub_issue_code in ?2",
             nativeQuery = true)
-    List<Appeal> findAllByCityTitleAndIssueCodeListIn(String cityTitle, List<Integer> issueCodeList);
+    List<Appeal> findAllByCityTitleAndIssueCodeListIn(String cityTitle, List<Integer> issueCodeList, Pageable pageable);
 
     List<Appeal> findAll();
     
     List<Appeal> findAllByCityCode(Integer cityCode);
-    
+    List<Appeal> findAllByCityCode(Integer cityCode, Pageable pageable);
 }

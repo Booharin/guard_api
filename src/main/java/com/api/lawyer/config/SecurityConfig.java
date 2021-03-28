@@ -74,7 +74,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(WEBSOCKET_CONNECT_ENDPOINT).permitAll()
                 .antMatchers(APPEAL).hasAnyRole("CLIENT", "ADMIN", "LAWYER")
                 .antMatchers(LAWYER).hasAnyRole("LAWYER", "ADMIN")
-                .antMatchers(ISSUE).hasAnyRole("ADMIN")
+                .antMatchers(ISSUE).hasAnyRole("CLIENT", "ADMIN", "LAWYER")
                 .antMatchers(REVIEW).hasAnyRole("CLIENT", "LAWYER", "ADMIN")
                 .antMatchers(CLIENT).hasAnyRole("CLIENT", "ADMIN")
                 .antMatchers(ALL_ADMIN).hasRole("ADMIN")

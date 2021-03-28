@@ -1,6 +1,7 @@
 package com.api.lawyer.model.websocket;
 
 
+import com.api.lawyer.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,17 +29,27 @@ public class ChatRoom {
     Пользователь 1
      */
     private Integer  userId;
-    private String  userFirstName;
+
+    @OneToOne
+    @JoinColumn(name = "userId", insertable = false, updatable = false)
+    private User user;
+
+    /*private String  userFirstName;
     private String  userLastName;
-    private String  userPhoto;
+    private String  userPhoto;*/
 
     /*
     Пользователь 2
      */
     private Integer  lawyerId;
-    private String  lawyerFirstName;
+
+    @OneToOne
+    @JoinColumn(name = "lawyerId", insertable = false, updatable = false)
+    private User lawyer;
+
+    /*private String  lawyerFirstName;
     private String  lawyerLastName;
-    private String  lawyerPhoto;
+    private String  lawyerPhoto;*/
 
     public Integer getId() {
         return id;
@@ -80,30 +91,6 @@ public class ChatRoom {
         this.userId = userId;
     }
 
-    public String getUserFirstName() {
-        return userFirstName;
-    }
-
-    public void setUserFirstName(String userFirstName) {
-        this.userFirstName = userFirstName;
-    }
-
-    public String getUserLastName() {
-        return userLastName;
-    }
-
-    public void setUserLastName(String userLastName) {
-        this.userLastName = userLastName;
-    }
-
-    public String getUserPhoto() {
-        return userPhoto;
-    }
-
-    public void setUserPhoto(String userPhoto) {
-        this.userPhoto = userPhoto;
-    }
-
     public Integer getLawyerId() {
         return lawyerId;
     }
@@ -112,33 +99,22 @@ public class ChatRoom {
         this.lawyerId = lawyerId;
     }
 
-    public String getLawyerFirstName() {
-        return lawyerFirstName;
+    public User getUser() {
+        return user;
     }
 
-    public void setLawyerFirstName(String lawyerFirstName) {
-        this.lawyerFirstName = lawyerFirstName;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public String getLawyerLastName() {
-        return lawyerLastName;
+    public User getLawyer() {
+        return lawyer;
     }
 
-    public void setLawyerLastName(String lawyerLastName) {
-        this.lawyerLastName = lawyerLastName;
-    }
-
-    public String getLawyerPhoto() {
-        return lawyerPhoto;
-    }
-
-    public void setLawyerPhoto(String lawyerPhoto) {
-        this.lawyerPhoto = lawyerPhoto;
+    public void setLawyer(User lawyer) {
+        this.lawyer = lawyer;
     }
 
     public ChatRoom(){}
-
-
-
 }
 

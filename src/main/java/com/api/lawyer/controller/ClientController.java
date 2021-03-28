@@ -5,6 +5,8 @@ import com.api.lawyer.dto.LawyerProfileDto;
 import com.api.lawyer.dto.UserProfileDto;
 import com.api.lawyer.model.*;
 import com.api.lawyer.repository.*;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -75,12 +77,12 @@ public class ClientController {
     }
 
     @GetMapping("/alllawyers")
-    public List<LawyerProfileDto> getAllLawyers(@RequestParam String cityTitle) {
+    public List<LawyerProfileDto> getAllLawyers(@RequestParam String cityTitle, @RequestParam Integer page, @RequestParam Integer pageSize) {
         Optional<City> optionalCity = cityRepository.findCityByTitle(cityTitle);
         if (optionalCity.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "City not found");
         City city  = optionalCity.get();
-        List<User> lawyers = userRepository.findAllByRole("ROLE_LAWYER");
+        List<User> lawyers = userRepository.findAllByRole("ROLE_LAWYER", PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "averageRate").and(Sort.by(Sort.Direction.ASC,"id"))));
         List<UserCity> q = userCityRepository.findAllByCityCodeAndUserIdIn(city.getCityCode(), lawyers.stream().map(User::getId).collect(Collectors.toList()));
         lawyers = userRepository.findAllByIdIn(q.stream().map(UserCity::getUserId).collect(Collectors.toList()));
         List<LawyerProfileDto> result = lawyers.stream().map(LawyerProfileDto::new).collect(Collectors.toList());

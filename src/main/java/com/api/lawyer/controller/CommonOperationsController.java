@@ -5,6 +5,8 @@ import com.api.lawyer.model.*;
 import com.api.lawyer.repository.*;
 import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
@@ -224,7 +226,7 @@ public class CommonOperationsController {
      * .../api/v1/lawyers?issue_code=1,2,3&cityTitle=Moscow
      */
     @GetMapping(value = "/lawyers")
-    public List<LawyerProfileDto> getAllLawyer(@RequestParam List<Integer> issueCode, @RequestParam String cityTitle) {
+    public List<LawyerProfileDto> getAllLawyer(@RequestParam List<Integer> issueCode, @RequestParam String cityTitle, @RequestParam Integer page, @RequestParam Integer pageSize) {
         Optional<City> city = cityRepository.findCityByTitle(cityTitle);
         if (city.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "City not found");
@@ -235,7 +237,7 @@ public class CommonOperationsController {
         List<Integer> ListLawyersByIssue = userRepository.findAllLawyer(issueCode);
         Set<Integer> listLawyers = new HashSet<Integer>(listUsersByCity);
         listLawyers.retainAll(ListLawyersByIssue);
-        List<User> lawyers = userRepository.findAllByIdIn(new ArrayList<Integer>(listLawyers));
+        List<User> lawyers = userRepository.findAllByIdIn(new ArrayList<Integer>(listLawyers), PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "averageRate").and(Sort.by(Sort.Direction.ASC, "id"))));
         List<LawyerProfileDto> result = lawyers.stream().map(LawyerProfileDto::new).collect(Collectors.toList());
         result.forEach(it -> it.setReviewList(reviewRepository.findAllByReceiverId(it.getId())));
         result.forEach(it -> {
@@ -313,8 +315,8 @@ public class CommonOperationsController {
      * .../api/v1/appeal/iac?issueCodeList=1,2,3&city=Moscow
      */
     @RequestMapping(value = "/iac", method = RequestMethod.GET)
-    public List<AppealDto> getAllAppeal(@RequestParam List<Integer> issueCodeList, @RequestParam String city) {
-        List<Appeal> appealList = appealCrudRepository.findAllByCityTitleAndIssueCodeListIn(city, issueCodeList);
+    public List<AppealDto> getAllAppeal(@RequestParam List<Integer> issueCodeList, @RequestParam String city, @RequestParam Integer page, @RequestParam Integer pageSize) {
+        List<Appeal> appealList = appealCrudRepository.findAllByCityTitleAndIssueCodeListIn(city, issueCodeList, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "id")));
         return appealList
                 .stream()
                 .map(it -> new AppealDto(it, city))

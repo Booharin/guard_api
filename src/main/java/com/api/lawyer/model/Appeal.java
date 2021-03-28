@@ -1,6 +1,7 @@
 package com.api.lawyer.model;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 @Table(name = "appeal")
@@ -17,6 +18,7 @@ public class Appeal {
     private Integer subIssueCode;
     private Integer cityCode;
     private Boolean isLawyerChoosed;
+    private BigDecimal cost;
     
     public Appeal() {}
     
@@ -82,5 +84,13 @@ public class Appeal {
     
     public void setLawyerChoosed(Boolean lawyerChoosed) {
         isLawyerChoosed = lawyerChoosed;
+    }
+
+    public BigDecimal getCost() {
+        return cost;
+    }
+
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
     }
 }
