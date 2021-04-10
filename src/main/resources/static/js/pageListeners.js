@@ -26,13 +26,12 @@ function getPage(url) {
 
                 document.title = title;
                 window.history.pushState({"html":xhr.responseText,"pageTitle":title},"", url);
-            } else if (xhr.status === 500) {
-                if (xhr.responseText.includes("JWT token ")) {
-                    alert("Token expired. Please relogin again")
-                    logout()
-                }
             }
         }
+        if (xhr.status === 401) {
+                  alert("Token expired. Please relogin again")
+                  logout()
+              }
     };
 
     xhr.send();

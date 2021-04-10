@@ -190,6 +190,7 @@ function generateAdminList(
     <span class="admin-name-li">${firstName}</span>
     <span class="admin-email">${email}</span>
     <span class="admin-telephone">${phoneNumber}</span>
+    <a><img src="/img/trash.svg" class="delete-icon" width="30px"></a>
   </li>
   `
   adminList.insertAdjacentHTML('afterbegin', admin);
