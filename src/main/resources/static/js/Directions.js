@@ -61,6 +61,10 @@ function fillDir() {
             }
         }
     }
+    $("#editDir").modal({
+          escapeClose: false,
+          clickClose: false
+        });
 }
 
 function fillSubDir() {
@@ -86,6 +90,10 @@ function fillSubDir() {
             }
         }
     }
+    $("#editSubDir").modal({
+      escapeClose: false,
+      clickClose: false
+    });
 }
 
 
@@ -367,15 +375,15 @@ function showIssues() {
     xhr.send();
 }
 
-var plus = `<li><a href="#newSubDir" rel="modal:open" class="law-plus"><span class="plus">+</span></a></li>`
+var plus = `<li><a href="#newSubDir" onclick='$("#newSubDir").modal({escapeClose: false,clickClose: false})' class="law-plus"><span class="plus">+</span></a></li>`
 
-var plusDiv = `<a href="#newDir" rel="modal:open" class="law-plus"><span class="plus">+</span></a>`
+var plusDiv = `<a href="#newDir" onclick='$("#newDir").modal({escapeClose: false,clickClose: false})' class="law-plus"><span class="plus">+</span></a>`
 
 function getSubIssueTemplate(name, isActive, id) {
     return `
   <li ${isActive} data-tab-name="${id}">
   ${name} 
-  <a class="aToSubDir" href="#editSubDir" rel="modal:open">
+  <a class="aToSubDir" href="#editSubDir">
   <img src="/img/pencil2.svg" class="edit-icon">
   </a>
 </li>`
@@ -384,7 +392,7 @@ function getSubIssueTemplate(name, isActive, id) {
 function getIssueTemplateCode(issueName) {
     return `
     <h1> <br>${issueName}</h1>
-    <a class="aToDir" href="#editDir" rel="modal:open">
+    <a class="aToDir" href="#editDir">
       <img src="/img/pencil2.svg" class="edit-icon">
     </a>`
 }
