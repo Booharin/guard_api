@@ -52,7 +52,10 @@ function fillDir() {
                 child.value = findActiveIssue().titleEn
             } else if (child.name === "description-en") {
                 child.value = findActiveIssue().subtitleEn
-            } else if (child.name === "image-view")
+            } else if (child.name === "sort") {
+                child.value = findActiveIssue().sort
+            }
+            else if (child.name === "image-view")
             {
                 if (findActiveIssue().image != null)
                   child.setAttribute('src', 'data:image/png;base64,'+findActiveIssue().image);
@@ -81,7 +84,10 @@ function fillSubDir() {
                 child.value = findActiveSubIssue().titleEn
             } else if (child.name === "description-en") {
                 child.value = findActiveSubIssue().subtitleEn
-            } else if (child.name === "image-view")
+            } else if (child.name === "sort") {
+                child.value = findActiveSubIssue().sort
+             }
+            else if (child.name === "image-view")
             {
               if (findActiveSubIssue().image != null)
                 child.setAttribute('src', 'data:image/png;base64,'+findActiveSubIssue().image);
@@ -117,14 +123,16 @@ function editIssue(button) {
         }
     };
 
-    let issueName = returnPreviousSiblingNTimes(button, 28)
-    let issueNameEn = returnPreviousSiblingNTimes(button, 24)
-    let locale = returnPreviousSiblingNTimes(button, 12)
-    let subtitle = returnPreviousSiblingNTimes(button, 20)
-    let subtitleEn = returnPreviousSiblingNTimes(button, 16)
-    let issueCode = returnPreviousSiblingNTimes(button, 8)
+    let issueName = $("#edit_issue_title").val();
+    let issueNameEn = $("#edit_issue_titleEn").val();
+    let locale = $("#edit_issue_locale").val();
+    let subtitle = $("#edit_issue_description").val();
+    let subtitleEn = $("#edit_issue_descriptionEn").val();
+    let issueCode = $("#edit_issue_code").val();
+    let sort = $("#edit_issue_sort").val();
 
-    let data = JSON.stringify({ "title": issueName, "locale": locale, "subtitle": subtitle, "issueCode": issueCode, "id": findActiveIssue().id, "titleEn": issueNameEn, "subtitleEn": subtitleEn })
+    let data = JSON.stringify({ "title": issueName, "locale": locale, "subtitle": subtitle, "issueCode": issueCode, "id": findActiveIssue().id, "titleEn": issueNameEn, "subtitleEn": subtitleEn, "sort": sort })
+
 
     var formData = new FormData();
     var image = $('#imageEditIssue').prop('files');
@@ -154,15 +162,17 @@ function editSubIssue(button) {
         }
     };
 
-    let issueNameRu = returnPreviousSiblingNTimes(button, 24)
-    let issueNameEn = returnPreviousSiblingNTimes(button, 20)
-    let descriptionRu = returnPreviousSiblingNTimes(button, 16)
-    let descriptionEn = returnPreviousSiblingNTimes(button, 12)
-    let subIssueCode = returnPreviousSiblingNTimes(button, 8)
+    let issueNameRu = $("#edit_subissue_title").val();
+    let issueNameEn = $("#edit_subissue_titleEn").val();
+    let descriptionRu = $("#edit_subissue_description").val();
+    let descriptionEn = $("#edit_subissue_descriptionEn").val();
+    let subIssueCode = $("#edit_subissue_code").val();
+    let sort = $("#edit_subissue_sort").val();
     let issueCode = findActiveIssue().issueCode
 
     let data = JSON.stringify({ "title": issueNameRu, "subtitle": descriptionRu, 
-    "issueCode": issueCode, "subIssueCode": subIssueCode, "id": findActiveSubIssue().id, "titleEn": issueNameEn, "subtitleEn": descriptionEn })
+    "issueCode": issueCode, "subIssueCode": subIssueCode, "id": findActiveSubIssue().id, "titleEn": issueNameEn, "subtitleEn": descriptionEn, "sort": sort })
+
 
     var formData = new FormData();
     var image = $('#imageEditSubIssue').prop('files');
@@ -193,13 +203,14 @@ function saveIssue(button) {
       }
   };
 
-    let issueNameRu = returnPreviousSiblingNTimes(button, 16)
-    let issueNameEn = returnPreviousSiblingNTimes(button, 14)
-    let subtitleRu = returnPreviousSiblingNTimes(button, 12)
-    let subtitleEn = returnPreviousSiblingNTimes(button, 10)
-    let issueCode = returnPreviousSiblingNTimes(button, 6)
+    let issueNameRu = $("#add_issue_title").val();
+    let issueNameEn = $("#add_issue_titleEn").val();
+    let subtitleRu = $("#add_issue_description").val();
+    let subtitleEn = $("#add_issue_descriptionEn").val();
+    let issueCode = $("#add_issue_code").val();
+    let sort = $("#add_issue_sort").val();
 
-    let data = JSON.stringify({"title": issueNameRu, "locale": sessionStorage.getItem("locale"), "subtitle": subtitleRu, "issueCode": issueCode, "titleEn": issueNameEn, "subtitleEn": subtitleEn })
+    let data = JSON.stringify({"title": issueNameRu, "locale": sessionStorage.getItem("locale"), "subtitle": subtitleRu, "issueCode": issueCode, "titleEn": issueNameEn, "subtitleEn": subtitleEn, "sort": sort })
     console.log(data)
 
     var formData = new FormData();
@@ -231,14 +242,16 @@ function saveSubIssue(button) {
       }
   };
 
-    let issueNameRu = returnPreviousSiblingNTimes(button, 18)
-    let issueNameEn = returnPreviousSiblingNTimes(button, 16)
-    let descriptionRu = returnPreviousSiblingNTimes(button, 12)
-    let descriptionEn = returnPreviousSiblingNTimes(button, 10)
-    let subIssueCode = returnPreviousSiblingNTimes(button, 6)
+    let issueNameRu = $("#add_subissue_title").val();
+    let issueNameEn = $("#add_subissue_titleEn").val();
+    let descriptionRu = $("#add_subissue_description").val();
+    let descriptionEn = $("#add_subissue_descriptionEn").val();
+    let subIssueCode = $("#add_subissue_code").val();
+    let sort = $("#add_subissue_sort").val();
     let issueCode = findActiveIssue().issueCode
 
-    let data = JSON.stringify({ "title": issueNameRu, "subtitle": descriptionRu, "issueCode": issueCode, "subIssueCode": subIssueCode, "titleEn": issueNameEn, "subtitleEn": descriptionEn })
+    let data = JSON.stringify({ "title": issueNameRu, "subtitle": descriptionRu, "issueCode": issueCode, "subIssueCode": subIssueCode, "titleEn": issueNameEn, "subtitleEn": descriptionEn, "sort": sort })
+
 
     var formData = new FormData();
     var image = $('#imageAddSubIssue').prop('files');

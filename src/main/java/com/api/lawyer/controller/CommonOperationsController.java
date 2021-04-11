@@ -148,9 +148,9 @@ public class CommonOperationsController {
     @GetMapping("/issues")
     public List<IssueDto> getAllIssues(@RequestParam String locale){
         List<IssueDto> resultList = new ArrayList<>();
-        issueRepository.findAllByLocale(locale).forEach((it) -> {
+        issueRepository.findAllByLocale(locale,Sort.by(Sort.Direction.ASC,"sort")).forEach((it) -> {
             IssueDto issueDto = new IssueDto(it);
-            issueDto.setSubIssueTypeList(subIssueRepository.findAllByIssueCode(it.getIssueCode()));
+            issueDto.setSubIssueTypeList(subIssueRepository.findAllByIssueCode(it.getIssueCode(),Sort.by(Sort.Direction.ASC,"sort")));
             resultList.add(issueDto);
         });
         return resultList;

@@ -102,6 +102,7 @@ public class IssueController {
             it.setTitle(issueType.getTitle());
             it.setTitleEn(issueType.getTitleEn());
             it.setLocale(issueType.getLocale());
+            it.setSort(issueType.getSort());
 
             if (image!=null && !image.isEmpty()) {
                 try {
@@ -128,6 +129,7 @@ public class IssueController {
             it.setSubtitleEn(subIssueType.getSubtitleEn());
             it.setTitle(subIssueType.getTitle());
             it.setTitleEn(subIssueType.getTitleEn());
+            it.setSort(subIssueType.getSort());
 
             if (image!=null && !image.isEmpty()) {
                 try {

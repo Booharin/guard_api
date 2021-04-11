@@ -16,6 +16,7 @@ public class SubIssueType {
     private String subtitleEn;
     private Integer issueCode;
     private byte[] image;
+    private Integer sort;
 
     public SubIssueType() {}
 
@@ -81,5 +82,13 @@ public class SubIssueType {
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
     }
 }

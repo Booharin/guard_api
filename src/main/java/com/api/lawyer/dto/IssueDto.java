@@ -16,6 +16,7 @@ public class IssueDto {
     private String locale;
     private List<SubIssueType> subIssueTypeList;
     private byte[] image;
+    private Integer sort;
     
     public IssueDto(IssueType issueType) {
         this.id = issueType.getId();
@@ -26,6 +27,7 @@ public class IssueDto {
         this.subtitleEn = issueType.getSubtitleEn();
         this.titleEn = issueType.getTitleEn();
         this.image = issueType.getImage();
+        this.sort = issueType.getSort();
     }
     
     public List<SubIssueType> getSubIssueTypeList() {
@@ -98,5 +100,13 @@ public class IssueDto {
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
     }
 }

@@ -1,6 +1,7 @@
 package com.api.lawyer.repository;
 
 import com.api.lawyer.model.SubIssueType;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,6 +12,7 @@ import java.util.Optional;
 public interface SubIssueRepository extends CrudRepository<SubIssueType, Integer> {
 
     List<SubIssueType> findAllByIssueCode(Integer issueCode);
+    List<SubIssueType> findAllByIssueCode(Integer issueCode, Sort sort);
 
     List<SubIssueType> findAllBySubIssueCodeIn(List<Integer> codes);
     
