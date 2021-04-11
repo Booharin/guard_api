@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -199,17 +200,17 @@ public class AdminController {
     }
 
     @PostMapping("save")
-    public void saveAdmin(@RequestBody UserAdmin admin) {
-        if (adminRepository.findByEmail(admin.getEmail()).isPresent())
+    public void saveAdmin(@RequestBody User admin) {
+        if (userRepository.findByEmail(admin.getEmail()).isPresent())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Admin with same email already exist");
-        adminRepository.save(admin);
+        admin.setRole("ROLE_ADMIN");
+        admin.setDateCreated(new Timestamp(new Date().getTime()));
+        userRepository.save(admin);
     }
 
     @GetMapping("admins")
-    public List<AdminDto> getAllAdmins() {
-        List<AdminDto> resultList = new ArrayList<>();
-        adminRepository.findAll().forEach(it ->  resultList.add(new AdminDto(it)));
-        return resultList;
+    public List<User> getAllAdmins() {
+        return userRepository.findAllByRole("ROLE_ADMIN");
     }
 
     private ModelAndView createModel(String name) {
