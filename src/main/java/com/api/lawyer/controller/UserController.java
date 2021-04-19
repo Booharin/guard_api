@@ -87,13 +87,11 @@ public class UserController {
         // 4. Grab some metadata from file if any
         Map<String, String> metadata = extractMetadata(file);
 
-        // 5. Store the image in s3 and update database (userProfileImageLink) with s3 image link
-        String path = String.format("%s/%s", BucketName.IMAGES.getBucketName(), user.getId());
         String filename = String.format("%s-%s", file.getOriginalFilename(), UUID.randomUUID());
 
         try {
-            fileStore.save(path, filename, Optional.of(metadata), file.getInputStream());
             user.setPhoto(filename);
+            user.setPhotobase64(Base64.getEncoder().encodeToString(file.getBytes()));
             userRepository.save(user);
         } catch (IOException e) {
             throw new IllegalStateException(e);
@@ -179,16 +177,11 @@ public class UserController {
     @GetMapping("{id}/image/download")
     public byte[] downloadUserProfileImage(@PathVariable("id") Integer id) {
         User user = getUserProfileOrThrow(id);
-
-        String path = String.format("%s/%s",
-                BucketName.IMAGES.getBucketName(),
-                user.getId());
-
-        if (user.getPhoto() == null || user.getPhoto().isEmpty()) {
+        if (user.getPhoto() == null || user.getPhoto().isEmpty() || user.getPhotobase64() == null || user.getPhotobase64().isEmpty()) {
             return new byte[0];
         }
 
-        return fileStore.download(path, user.getPhoto());
+        return Base64.getDecoder().decode(user.getPhotobase64());
     }
 
     private Map<String, String> extractMetadata(MultipartFile file) {

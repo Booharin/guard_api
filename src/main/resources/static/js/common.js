@@ -1,4 +1,4 @@
-var URL  = "https://guardapi.co.uk/api/v1/"
+var URL  = "https://guardapi.ru/api/v1/"
 //var URL  = "http://localhost:5000/api/v1/"
 
 function common() {

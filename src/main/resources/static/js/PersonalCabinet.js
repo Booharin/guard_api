@@ -170,7 +170,7 @@ function showAdmins() {
         if (xhr.readyState === 4 && xhr.status === 200) {
             let json = JSON.parse(xhr.responseText)
             for(let admin of json) {
-                generateAdminList(admin.firstName, admin.lastName, admin.email, admin.phoneNumber)
+                generateAdminList(admin.id, admin.firstName, admin.lastName, admin.email, admin.phoneNumber)
             }
             state = document.documentElement.innerHTML;
         }
@@ -179,6 +179,7 @@ function showAdmins() {
 }
 
 function generateAdminList(
+    id,
     firstName, 
     lastName, 
     email, 
@@ -190,10 +191,40 @@ function generateAdminList(
     <span class="admin-name-li">${firstName}</span>
     <span class="admin-email">${email}</span>
     <span class="admin-telephone">${phoneNumber}</span>
+    <a onclick="deleteAdmin(${id},'${lastName}')"><img src="/img/trash.svg" class="delete-icon" width="30px"></a>
   </li>
   `
   adminList.insertAdjacentHTML('afterbegin', admin);
-  
+}
+
+function deleteAdmin(id, lastName)
+{
+    if (confirm("Удалить администратора "+lastName+"(ИД="+id+")?"))
+    {
+        deleteUserById(id,"admin/PersonalCabinet");
+    }
+}
+
+function deleteUserById(userId, page) {
+    let token = sessionStorage.getItem("token")
+
+    let xhr = new XMLHttpRequest();
+    let url = URL + "users/delete?id="+userId;
+    xhr.open("GET", url, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Authorization", `Bearer_${token}`);
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            if(xhr.status === 200) {
+                alert("Deleted")
+                getPage(URL + page)
+            } else {
+                alert("Error")
+            }
+        }
+    }
+    xhr.send()
 }
 
 function saveEvent(endpoint, isCity, button) {

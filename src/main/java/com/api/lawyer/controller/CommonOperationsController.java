@@ -148,9 +148,9 @@ public class CommonOperationsController {
     @GetMapping("/issues")
     public List<IssueDto> getAllIssues(@RequestParam String locale){
         List<IssueDto> resultList = new ArrayList<>();
-        issueRepository.findAllByLocale(locale).forEach((it) -> {
+        issueRepository.findAllByLocale(locale,Sort.by(Sort.Direction.ASC,"sort")).forEach((it) -> {
             IssueDto issueDto = new IssueDto(it);
-            issueDto.setSubIssueTypeList(subIssueRepository.findAllByIssueCode(it.getIssueCode()));
+            issueDto.setSubIssueTypeList(subIssueRepository.findAllByIssueCode(it.getIssueCode(),Sort.by(Sort.Direction.ASC,"sort")));
             resultList.add(issueDto);
         });
         return resultList;
@@ -255,6 +255,16 @@ public class CommonOperationsController {
     
             List<Review> reviews = reviewRepository.findAllByReceiverId(it.getId());
             it.setReviewList(reviews);
+
+            List<SubIssueType> subIssueTypeList = lawyerRepository
+                    .findByLawyerId(it.getId())
+                    .stream()
+                    .map(UserLawyer::getSubIssueCode)
+                    .map(subIssueRepository::findBySubIssueCode)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .collect(Collectors.toList());
+            it.setSubIssueTypes(subIssueTypeList);
             
             List<Integer> subIssues = lawyerRepository.findByLawyerId(it.getId())
                     .stream()

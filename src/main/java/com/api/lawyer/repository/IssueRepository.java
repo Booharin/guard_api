@@ -1,6 +1,7 @@
 package com.api.lawyer.repository;
 
 import com.api.lawyer.model.IssueType;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,6 +12,7 @@ import java.util.Optional;
 public interface IssueRepository extends CrudRepository<IssueType, Integer> {
 
     List<IssueType> findAllByLocale(String locale);
+    List<IssueType> findAllByLocale(String locale, Sort sort);
     
     Optional<IssueType> findByIssueCode(Integer issueCode);
     

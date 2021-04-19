@@ -16,6 +16,7 @@ public class IssueType {
     private String subtitleEn;
     private String locale;
     private byte[] image;
+    private Integer sort;
 
     public IssueType() {}
 
@@ -82,5 +83,13 @@ public class IssueType {
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
     }
 }
