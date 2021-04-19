@@ -255,6 +255,16 @@ public class CommonOperationsController {
     
             List<Review> reviews = reviewRepository.findAllByReceiverId(it.getId());
             it.setReviewList(reviews);
+
+            List<SubIssueType> subIssueTypeList = lawyerRepository
+                    .findByLawyerId(it.getId())
+                    .stream()
+                    .map(UserLawyer::getSubIssueCode)
+                    .map(subIssueRepository::findBySubIssueCode)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .collect(Collectors.toList());
+            it.setSubIssueTypes(subIssueTypeList);
             
             List<Integer> subIssues = lawyerRepository.findByLawyerId(it.getId())
                     .stream()
