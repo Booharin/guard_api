@@ -27,6 +27,7 @@ public class User {
     private String role;
     private String tokenDevice;
     private Integer Complaint;
+    private String photobase64;
     
     public User() {}
     
@@ -133,5 +134,13 @@ public class User {
 
     public void setComplaint(Integer complaint) {
         Complaint = complaint;
+    }
+
+    public String getPhotobase64() {
+        return photobase64;
+    }
+
+    public void setPhotobase64(String photobase64) {
+        this.photobase64 = photobase64;
     }
 }
