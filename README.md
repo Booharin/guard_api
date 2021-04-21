@@ -5,6 +5,7 @@ GET - запрос
 /api/v1/lawyer/lawyers
 
 Response
+```json
 {
     "lawyers": [
         {
@@ -31,3 +32,4 @@ Response
         }
     ]
 }
+```
