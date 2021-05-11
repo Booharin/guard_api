@@ -52,12 +52,21 @@ public class ChatController {
     }
 
     @GetMapping("/getconversations")
-    public List<ChatRoomDto> getAllChatRooms(@RequestParam Integer id, @RequestParam Boolean isLawyer, @RequestParam Integer page, @RequestParam Integer pageSize) {
+    public List<ChatRoomDto> getAllChatRooms(@RequestParam Integer id, @RequestParam Boolean isLawyer, @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer pageSize) {
         List<ChatRoom> chatRooms = new ArrayList<>();
-        if(isLawyer)
-            chatRooms = chatRoomRepository.findAllByLawyerId(id, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "id")));
-        else
-            chatRooms = chatRoomRepository.findAllByUserId(id, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "id")));
+
+        if (page != null && pageSize != null) {
+            if (isLawyer)
+                chatRooms = chatRoomRepository.findAllByLawyerId(id, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "id")));
+            else
+                chatRooms = chatRoomRepository.findAllByUserId(id, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "id")));
+        } else
+        {
+            if (isLawyer)
+                chatRooms = chatRoomRepository.findAllByLawyerId(id);
+            else
+                chatRooms = chatRoomRepository.findAllByUserId(id);
+        }
 
         List<ChatRoomDto> chatRoomDtos = new ArrayList<>();
         for (ChatRoom i : chatRooms){
