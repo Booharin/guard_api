@@ -4,6 +4,8 @@ import com.api.lawyer.model.Review;
 import com.api.lawyer.model.User;
 import com.api.lawyer.repository.ReviewRepository;
 import com.api.lawyer.repository.UserRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -44,4 +46,11 @@ public class ReviewController {
             reviewRepository.save(review);
         }, () -> {throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lawyer not found");});
     }
+
+    @GetMapping(value = "/get")
+    public List<Review> getReview(@RequestParam int userId, @RequestParam int page, @RequestParam int pageSize) {
+        return reviewRepository.findAllByReceiverId(userId, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "id")));
+    }
+
+
 }
