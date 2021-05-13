@@ -47,9 +47,9 @@ public class ReviewController {
         }, () -> {throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lawyer not found");});
     }
 
-    @GetMapping(value = "/get")
-    public List<Review> getReview(@RequestParam int userId, @RequestParam int page, @RequestParam int pageSize) {
-        return reviewRepository.findAllByReceiverId(userId, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "id")));
+    @GetMapping(value = "/getByReceiverId")
+    public List<Review> getReview(@RequestParam int receiverId, @RequestParam int page, @RequestParam int pageSize) {
+        return reviewRepository.findAllByReceiverId(receiverId, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "reviewId")));
     }
 
 
