@@ -17,6 +17,8 @@ public interface SubIssueRepository extends CrudRepository<SubIssueType, Integer
     List<SubIssueType> findAllBySubIssueCodeIn(List<Integer> codes);
     
     Optional<SubIssueType> findBySubIssueCode(Integer issueCode);
-    
     Optional<SubIssueType> findByTitle(String title);
+
+    Optional<SubIssueType> findBySubIssueCodeAndIdNot(Integer issueCode, Integer id);
+    Optional<SubIssueType> findByTitleAndIdNot(String title, Integer id);
 }
