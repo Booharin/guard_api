@@ -11,6 +11,7 @@ import java.util.List;
 public interface ReviewRepository extends CrudRepository<Review, Integer> {
     
     List<Review> findAllByReceiverId(Integer id);
+    List<Review> findAllByReceiverIdOrderByReviewId(Integer id);
     List<Review> findAllByReceiverId(Integer id, Pageable pageable);
 
 }

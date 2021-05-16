@@ -48,8 +48,11 @@ public class ReviewController {
     }
 
     @GetMapping(value = "/getByReceiverId")
-    public List<Review> getReview(@RequestParam int receiverId, @RequestParam int page, @RequestParam int pageSize) {
-        return reviewRepository.findAllByReceiverId(receiverId, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "reviewId")));
+    public List<Review> getReview(@RequestParam int receiverId, @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer pageSize) {
+        if (page != null && pageSize != null)
+            return reviewRepository.findAllByReceiverId(receiverId, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "reviewId")));
+        else
+            return reviewRepository.findAllByReceiverIdOrderByReviewId(receiverId);
     }
 
 
