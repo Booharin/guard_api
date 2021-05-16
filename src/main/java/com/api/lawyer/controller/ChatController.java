@@ -88,14 +88,22 @@ public class ChatController {
         return chatRoomDtos;
     }
 
+    private void checkUsers(Integer lawyerId, Integer clientId)
+    {
+        if (chatRoomRepository.countByUserIdAndLawyerId(clientId, lawyerId)>0)
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Chat with this lawyerId and clientId exists");
 
-    @PostMapping("/createconversationByAppeal")
-    public void createConversationByAppeal(@RequestParam Integer lawyerId, @RequestParam Integer clientId, @RequestParam String appealId){
         if (!userRepository.existsById(lawyerId))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "lawyer with this lawyerId not exists");
 
         if (!userRepository.existsById(clientId))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Client with this clientId not exists");
+    }
+
+
+    @PostMapping("/createconversationByAppeal")
+    public ChatRoom createConversationByAppeal(@RequestParam Integer lawyerId, @RequestParam Integer clientId, @RequestParam String appealId){
+        checkUsers(lawyerId, clientId);
 
         Date date = new Date();
         ChatRoom chatRoom = new ChatRoom();
@@ -107,16 +115,14 @@ public class ChatController {
 
         chatRoom.setUserId(Integer.valueOf(clientId));
         chatRoom.setLawyerId(Integer.valueOf(lawyerId));
-        chatRoomRepository.save(chatRoom);
+        chatRoom = chatRoomRepository.save(chatRoom);
+
+        return chatRoom;
     }
 
     @PostMapping("/createconversation")
-    public void createConversation(@RequestParam Integer lawyerId, @RequestParam Integer clientId){
-        if (!userRepository.existsById(lawyerId))
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "lawyer with this lawyerId not exists");
-
-        if (!userRepository.existsById(clientId))
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Client with this clientId not exists");
+    public ChatRoom createConversation(@RequestParam Integer lawyerId, @RequestParam Integer clientId){
+        checkUsers(lawyerId, clientId);
 
         Date date = new Date();
         ChatRoom chatRoom = new ChatRoom();
@@ -125,7 +131,8 @@ public class ChatController {
 
         chatRoom.setUserId(Integer.valueOf(clientId));
         chatRoom.setLawyerId(Integer.valueOf(lawyerId));
-        chatRoomRepository.save(chatRoom);
+        chatRoom = chatRoomRepository.save(chatRoom);
+        return chatRoom;
     }
 
     @GetMapping("/getmessages")

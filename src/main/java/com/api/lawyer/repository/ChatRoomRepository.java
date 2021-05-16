@@ -17,6 +17,8 @@ public interface ChatRoomRepository extends CrudRepository<ChatRoom, String> {
     List<ChatRoom> findAllByUserId(Integer userId, Pageable pageable);
     List<ChatRoom> findAllByLawyerId(Integer lawyerId, Pageable pageable);
 
+    Integer countByUserIdAndLawyerId(Integer userId, Integer lawyerId);
+
     Optional<ChatRoom> findFirstById(Integer id);
     //ChatMessage deleteAllByUserIdAndLa(Integer userId, Integer lawyerId);
 }
