@@ -129,8 +129,11 @@ public class ChatController {
     }
 
     @GetMapping("/getmessages")
-    public List<ChatMessage> getAllMessages(@RequestParam Integer chatId){
-        return chatMessageRepository.findAllByChatId(chatId);
+    public List<ChatMessage> getAllMessages(@RequestParam Integer chatId, @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer pageSize){
+        if (page != null && pageSize != null)
+            return chatMessageRepository.findAllByChatId(chatId, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "id")));
+        else
+            return chatMessageRepository.findAllByChatId(chatId);
     }
 
     @PostMapping("/deleteconversation")
