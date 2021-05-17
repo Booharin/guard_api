@@ -86,7 +86,7 @@ public class ClientController {
         List<UserCity> q = userCityRepository.findAllByCityCodeAndUserIdIn(city.getCityCode(), lawyers.stream().map(User::getId).collect(Collectors.toList()));
         lawyers = userRepository.findAllByIdInOrderByAverageRateDesc(q.stream().map(UserCity::getUserId).collect(Collectors.toList()));
         List<LawyerProfileDto> result = lawyers.stream().map(LawyerProfileDto::new).collect(Collectors.toList());
-        result.forEach(it -> it.setReviewList(reviewRepository.findAllByReceiverId(it.getId())));
+        result.forEach(it -> it.setReviewList(reviewRepository.findAllByReceiverId(0)));
         result.forEach(it -> {
             List<Integer> cityCodes = userCityRepository
                     .findAllByUserId(it.getId())
@@ -100,8 +100,8 @@ public class ClientController {
             });
             it.setCountryCode(new ArrayList<>(countryCodes));
 
-            List<Review> reviews = reviewRepository.findAllByReceiverId(it.getId());
-            it.setReviewList(reviews);
+            //List<Review> reviews = reviewRepository.findAllByReceiverId(it.getId());
+            //it.setReviewList(reviews);
 
             List<Integer> subIssues = lawyerRepository.findByLawyerId(it.getId())
                     .stream()

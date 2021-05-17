@@ -209,7 +209,7 @@ public class CommonOperationsController {
             countryCodes.add(cityRepository.findCityByCityCode(it).getCountryCode());
         });
         clientProfileDto.setCountryCode(new ArrayList<>(countryCodes));
-        List<Review> reviews = reviewRepository.findAllByReceiverId(user.getId());
+        List<Review> reviews = reviewRepository.findAllByReceiverId(0);
         clientProfileDto.setReviewList(reviews);
         clientProfileDto.setSubIssueTypes(null);
         return clientProfileDto;
@@ -239,7 +239,7 @@ public class CommonOperationsController {
         listLawyers.retainAll(ListLawyersByIssue);
         List<User> lawyers = userRepository.findAllByIdIn(new ArrayList<Integer>(listLawyers), PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "averageRate").and(Sort.by(Sort.Direction.ASC, "id"))));
         List<LawyerProfileDto> result = lawyers.stream().map(LawyerProfileDto::new).collect(Collectors.toList());
-        result.forEach(it -> it.setReviewList(reviewRepository.findAllByReceiverId(it.getId())));
+        result.forEach(it -> it.setReviewList(reviewRepository.findAllByReceiverId(0)));
         result.forEach(it -> {
             List<Integer> cityCodes = userCityRepository
                     .findAllByUserId(it.getId())
@@ -253,8 +253,8 @@ public class CommonOperationsController {
             });
             it.setCountryCode(new ArrayList<>(countryCodes));
     
-            List<Review> reviews = reviewRepository.findAllByReceiverId(it.getId());
-            it.setReviewList(reviews);
+            //List<Review> reviews = reviewRepository.findAllByReceiverId(it.getId());
+            //it.setReviewList(reviews);
 
             List<SubIssueType> subIssueTypeList = lawyerRepository
                     .findByLawyerId(it.getId())
@@ -300,7 +300,7 @@ public class CommonOperationsController {
             countryCodes.add(cityRepository.findCityByCityCode(it).getCountryCode());
         });
         lawyerProfileDto.setCountryCode(new ArrayList<>(countryCodes));
-        List<Review> reviews = reviewRepository.findAllByReceiverId(lawyerProfileDto.getId());
+        List<Review> reviews = reviewRepository.findAllByReceiverId(0);
         lawyerProfileDto.setReviewList(reviews);
         List<SubIssueType> subIssueTypeList = lawyerRepository
                 .findByLawyerId(lawyerProfileDto.getId())
