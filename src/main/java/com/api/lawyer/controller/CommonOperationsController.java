@@ -3,6 +3,7 @@ package com.api.lawyer.controller;
 import com.api.lawyer.dto.*;
 import com.api.lawyer.model.*;
 import com.api.lawyer.repository.*;
+import com.api.lawyer.utility.MyConstants;
 import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageRequest;
@@ -135,8 +136,19 @@ public class CommonOperationsController {
         user.setPassword(password);
         userRepository.save(user);
         message.setTo(email);
+        message.setFrom(MyConstants.MY_EMAIL);
         message.setSubject("New Password");
         message.setText("Your new password is: " + password);
+        this.emailSender.send(message);
+    }
+
+    @GetMapping("/testmail")
+    public void testMail(@RequestParam String email) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setFrom(MyConstants.MY_EMAIL);
+        message.setSubject("New Password");
+        message.setText("This is test message");
         this.emailSender.send(message);
     }
     
