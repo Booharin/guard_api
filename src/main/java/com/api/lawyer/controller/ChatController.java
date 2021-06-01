@@ -78,6 +78,7 @@ public class ChatController {
                     .appealId(i.getAppealId())
                     .dateCreated(i.getDateCreated())
                     .lastMessage(i.getLastMessage())
+                    .dateLastMessage(i.getDateLastMessage())
                     .userFirstName(isLawyer ? i.getUser().getFirstName() : i.getLawyer().getFirstName())
                     .userId(isLawyer ? i.getUserId() : i.getLawyerId())
                     .userLastName(isLawyer ? i.getUser().getLastName() : i.getLawyer().getLastName())

@@ -10,6 +10,7 @@ public class ChatRoomDto {
     private Integer id;
     private Timestamp dateCreated;
     private String  lastMessage;
+    private Timestamp dateLastMessage;
     private Integer appealId;
 
     private Integer  userId;
@@ -88,5 +89,13 @@ public class ChatRoomDto {
 
     public void setCountNotReadMessage(Integer countNotReadMessage) {
         this.countNotReadMessage = countNotReadMessage;
+    }
+
+    public Timestamp getDateLastMessage() {
+        return dateLastMessage;
+    }
+
+    public void setDateLastMessage(Timestamp dateLastMessage) {
+        this.dateLastMessage = dateLastMessage;
     }
 }

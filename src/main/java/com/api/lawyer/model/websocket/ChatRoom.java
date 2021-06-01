@@ -23,6 +23,7 @@ public class ChatRoom {
     private Integer id;
     private Timestamp dateCreated;
     private String  lastMessage;
+    private Timestamp dateLastMessage;
     private Integer appealId;
 
     /*
@@ -34,10 +35,6 @@ public class ChatRoom {
     @JoinColumn(name = "userId", insertable = false, updatable = false)
     private User user;
 
-    /*private String  userFirstName;
-    private String  userLastName;
-    private String  userPhoto;*/
-
     /*
     Пользователь 2
      */
@@ -46,10 +43,6 @@ public class ChatRoom {
     @OneToOne
     @JoinColumn(name = "lawyerId", insertable = false, updatable = false)
     private User lawyer;
-
-    /*private String  lawyerFirstName;
-    private String  lawyerLastName;
-    private String  lawyerPhoto;*/
 
     public Integer getId() {
         return id;
@@ -113,6 +106,14 @@ public class ChatRoom {
 
     public void setLawyer(User lawyer) {
         this.lawyer = lawyer;
+    }
+
+    public Timestamp getDateLastMessage() {
+        return dateLastMessage;
+    }
+
+    public void setDateLastMessage(Timestamp dateLastMessage) {
+        this.dateLastMessage = dateLastMessage;
     }
 
     public ChatRoom(){}

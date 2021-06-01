@@ -67,6 +67,7 @@ public class MessageController {
 
         ChatRoom chatRoom = chatRoomRepository.findFirstById(Integer.valueOf(roomId)).get();
         chatRoom.setLastMessage(chatMessage.getContent());
+        chatRoom.setDateLastMessage(mess.getDateCreated());
         chatRoomRepository.save(chatRoom);
 
         messagingTemplate.convertAndSend(String.format("/topic/%s", recieverId), chatMessage);
