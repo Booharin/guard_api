@@ -76,7 +76,7 @@ public class AuthenticationRestControllerV1 {
                 countryCodes.add(cityRepository.findCityByCityCode(it).getCountryCode());
             });
             userProfileDto.setCountryCode(new ArrayList<>(countryCodes));
-            List<Review> reviews = reviewRepository.findAllByReceiverId(user.getId());
+            List<Review> reviews = reviewRepository.findAllByReceiverId(0);
             userProfileDto.setReviewList(reviews);
             if (user.getRole().equals("ROLE_LAWYER")) {
                 List<SubIssueType> subIssueTypeList = lawyerRepository

@@ -117,7 +117,11 @@ function editIssue(button) {
             if (xhr.status === 200) {
                 alert("Saved")
                 getPage(URL + "admin/Directions")
-            } else {
+            }
+            else if (xhr.status === 409) {
+                alert(JSON.parse(xhr.responseText).message)
+            }
+            else {
                 alert("Error")
             }
         }
@@ -156,7 +160,11 @@ function editSubIssue(button) {
             if (xhr.status === 200) {
                 alert("Saved")
                 getPage(URL + "admin/Directions")
-            } else {
+            }
+            else if (xhr.status === 409) {
+               alert(JSON.parse(xhr.responseText).message)
+            }
+            else {
                 alert("Error")
             }
         }

@@ -3,6 +3,7 @@ package com.api.lawyer.controller;
 import com.api.lawyer.dto.*;
 import com.api.lawyer.model.*;
 import com.api.lawyer.repository.*;
+import com.api.lawyer.utility.MyConstants;
 import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageRequest;
@@ -135,8 +136,19 @@ public class CommonOperationsController {
         user.setPassword(password);
         userRepository.save(user);
         message.setTo(email);
+        message.setFrom(MyConstants.MY_EMAIL);
         message.setSubject("New Password");
         message.setText("Your new password is: " + password);
+        this.emailSender.send(message);
+    }
+
+    @GetMapping("/testmail")
+    public void testMail(@RequestParam String email) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setFrom(MyConstants.MY_EMAIL);
+        message.setSubject("New Password");
+        message.setText("This is test message");
         this.emailSender.send(message);
     }
     
@@ -209,7 +221,7 @@ public class CommonOperationsController {
             countryCodes.add(cityRepository.findCityByCityCode(it).getCountryCode());
         });
         clientProfileDto.setCountryCode(new ArrayList<>(countryCodes));
-        List<Review> reviews = reviewRepository.findAllByReceiverId(user.getId());
+        List<Review> reviews = reviewRepository.findAllByReceiverId(0);
         clientProfileDto.setReviewList(reviews);
         clientProfileDto.setSubIssueTypes(null);
         return clientProfileDto;
@@ -239,7 +251,7 @@ public class CommonOperationsController {
         listLawyers.retainAll(ListLawyersByIssue);
         List<User> lawyers = userRepository.findAllByIdIn(new ArrayList<Integer>(listLawyers), PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "averageRate").and(Sort.by(Sort.Direction.ASC, "id"))));
         List<LawyerProfileDto> result = lawyers.stream().map(LawyerProfileDto::new).collect(Collectors.toList());
-        result.forEach(it -> it.setReviewList(reviewRepository.findAllByReceiverId(it.getId())));
+        result.forEach(it -> it.setReviewList(reviewRepository.findAllByReceiverId(0)));
         result.forEach(it -> {
             List<Integer> cityCodes = userCityRepository
                     .findAllByUserId(it.getId())
@@ -253,8 +265,8 @@ public class CommonOperationsController {
             });
             it.setCountryCode(new ArrayList<>(countryCodes));
     
-            List<Review> reviews = reviewRepository.findAllByReceiverId(it.getId());
-            it.setReviewList(reviews);
+            //List<Review> reviews = reviewRepository.findAllByReceiverId(it.getId());
+            //it.setReviewList(reviews);
 
             List<SubIssueType> subIssueTypeList = lawyerRepository
                     .findByLawyerId(it.getId())
@@ -300,7 +312,7 @@ public class CommonOperationsController {
             countryCodes.add(cityRepository.findCityByCityCode(it).getCountryCode());
         });
         lawyerProfileDto.setCountryCode(new ArrayList<>(countryCodes));
-        List<Review> reviews = reviewRepository.findAllByReceiverId(lawyerProfileDto.getId());
+        List<Review> reviews = reviewRepository.findAllByReceiverId(0);
         lawyerProfileDto.setReviewList(reviews);
         List<SubIssueType> subIssueTypeList = lawyerRepository
                 .findByLawyerId(lawyerProfileDto.getId())

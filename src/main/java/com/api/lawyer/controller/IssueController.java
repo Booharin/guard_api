@@ -94,6 +94,7 @@ public class IssueController {
     @PostMapping("/eissue")
     public void editIssue(@RequestParam String data, @RequestParam(value = "image", required = false) MultipartFile image) throws JsonProcessingException {
         IssueType issueType = new ObjectMapper().readValue(data, IssueType.class);
+        checkIssue(issueType);
         Optional<IssueType> issueTypeOptional = issueRepository.findById(issueType.getId());
         issueTypeOptional.ifPresentOrElse(it -> {
             it.setIssueCode(issueType.getIssueCode());
@@ -121,6 +122,7 @@ public class IssueController {
     @PostMapping("/esubissue")
     public void editSubIssue(@RequestParam String data, @RequestParam(value = "image", required = false) MultipartFile image) throws JsonProcessingException {
         SubIssueType subIssueType = new ObjectMapper().readValue(data, SubIssueType.class);
+        checkSubIssue(subIssueType);
         Optional<SubIssueType> subIssueTypeOptional = subIssueRepository.findById(subIssueType.getId());
         subIssueTypeOptional.ifPresentOrElse(it -> {
             it.setIssueCode(subIssueType.getIssueCode());
@@ -158,16 +160,23 @@ public class IssueController {
     }
 
     private void checkSubIssue(SubIssueType subIssueType) {
-        if (subIssueRepository.findBySubIssueCode(subIssueType.getSubIssueCode()).isPresent())
+        int currentId = 0;
+        if (subIssueType.getId() != null)
+            currentId = subIssueType.getId();
+        if (subIssueRepository.findBySubIssueCodeAndIdNot(subIssueType.getSubIssueCode(), currentId).isPresent())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "SubIssue with same sub issue code already exist");
-        if (subIssueRepository.findByTitle(subIssueType.getTitle()).isPresent())
+        if (subIssueRepository.findByTitleAndIdNot(subIssueType.getTitle(), currentId).isPresent())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "SubIssue with same title already exist");
     }
     
     private void checkIssue(IssueType issueType) {
-        if (issueRepository.findByIssueCode(issueType.getIssueCode()).isPresent())
+        int currentId = 0;
+        if (issueType.getId() != null)
+            currentId = issueType.getId();
+
+        if (issueRepository.findByIssueCodeAndIdNot(issueType.getIssueCode(), currentId).isPresent())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Issue with same issue code already exist");
-        if (issueRepository.findByTitle(issueType.getTitle()).isPresent())
+        if (issueRepository.findByTitleAndIdNot(issueType.getTitle(), currentId).isPresent())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Issue with same title already exist");
     }
 }
