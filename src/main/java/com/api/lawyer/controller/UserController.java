@@ -323,7 +323,12 @@ public class UserController {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            userRepository.delete(user);
+
+            List<ChatMessage> listChatMessage = chatMessageRepository.findAllBySenderId(user.getId());
+            for (ChatMessage item: listChatMessage)
+            {
+                chatMessageRepository.delete(item);
+            }
 
             List<Appeal> listAppeal = appealCrudRepository.findAllByClientId(user.getId());
             for (Appeal item: listAppeal) {
@@ -342,11 +347,7 @@ public class UserController {
                 chatRoomRepository.delete(item);
             }
 
-            List<ChatMessage> listChatMessage = chatMessageRepository.findAllBySenderId(user.getId());
-            for (ChatMessage item: listChatMessage)
-            {
-                chatMessageRepository.delete(item);
-            }
+            userRepository.delete(user);
 
             Map<Object, Object> response = new HashMap<>();
             response.put("result", "OK");
