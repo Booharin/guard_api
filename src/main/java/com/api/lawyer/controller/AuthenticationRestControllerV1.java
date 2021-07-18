@@ -1,5 +1,6 @@
 package com.api.lawyer.controller;
 
+import com.api.lawyer.dto.AuthenticationRequestByIdDto;
 import com.api.lawyer.dto.AuthenticationRequestDto;
 import com.api.lawyer.dto.ClientProfileDto;
 import com.api.lawyer.dto.UserProfileDto;
@@ -107,23 +108,25 @@ public class AuthenticationRestControllerV1 {
 
     @CrossOrigin(origins = "*")
     @PostMapping("loginClientById")
-    public ResponseEntity loginClientById(@RequestParam int id, @RequestParam String tokenDevice) {
+    public ResponseEntity loginClientById(@RequestBody AuthenticationRequestByIdDto requestDto) {
 
-        if (userRepository.existsById(id))
+        if (userRepository.existsById(requestDto.getUserId()))
         {
-            User user = userRepository.findFirstById(id);
+            User user = userRepository.findFirstById(requestDto.getUserId());
             if (user.getRole().equals("ROLE_CLIENT"))
             {
                 AuthenticationRequestDto authenticationRequestDto = new AuthenticationRequestDto();
                 authenticationRequestDto.setUserEmail(user.getEmail());
                 authenticationRequestDto.setUserPassword(user.getPassword());
-                authenticationRequestDto.setTokenDevice(tokenDevice);
+                authenticationRequestDto.setTokenDevice(requestDto.getTokenDevice());
 
                 return login(authenticationRequestDto);
+            } else
+            {
+                throw new BadCredentialsException("This user is not client");
             }
         } else {
             throw new BadCredentialsException("No user with this id");
         }
-        return null;
     }
 }
