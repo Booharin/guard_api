@@ -104,4 +104,26 @@ public class AuthenticationRestControllerV1 {
             throw new BadCredentialsException("Invalid username or password");
         }
     }
+
+    @CrossOrigin(origins = "*")
+    @PostMapping("loginClientById")
+    public ResponseEntity loginClientById(@RequestParam int id, @RequestParam String tokenDevice) {
+
+        if (userRepository.existsById(id))
+        {
+            User user = userRepository.findFirstById(id);
+            if (user.getRole().equals("ROLE_CLIENT"))
+            {
+                AuthenticationRequestDto authenticationRequestDto = new AuthenticationRequestDto();
+                authenticationRequestDto.setUserEmail(user.getEmail());
+                authenticationRequestDto.setUserPassword(user.getPassword());
+                authenticationRequestDto.setTokenDevice(tokenDevice);
+
+                return login(authenticationRequestDto);
+            }
+        } else {
+            throw new BadCredentialsException("No user with this id");
+        }
+        return null;
+    }
 }

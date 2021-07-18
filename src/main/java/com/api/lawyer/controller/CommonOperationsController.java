@@ -76,7 +76,21 @@ public class CommonOperationsController {
         this.appealCrudRepository = appealCrudRepository;
         this.emailSender = emailSender;
     }
-    
+
+    @GetMapping("/anonymousClientRegister")
+    public User anonymousClientRegister() {
+        RegistrationDto newUser = new RegistrationDto();
+
+        long unicIdentify = System.currentTimeMillis();
+
+        newUser.setCity("Москва");
+        newUser.setEmail("email"+unicIdentify+"@email.ru");
+        newUser.setPassword("Password"+unicIdentify);
+        newUser.setRole("ROLE_CLIENT");
+
+        return registerNewUser(newUser);
+    }
+
     /**
      * Controller registers new user
      * @param newUser - new user
