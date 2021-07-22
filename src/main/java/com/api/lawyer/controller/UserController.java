@@ -2,6 +2,7 @@ package com.api.lawyer.controller;
 
 import com.api.lawyer.bucket.BucketName;
 import com.api.lawyer.dto.ChatMessageDto;
+import com.api.lawyer.dto.EditDescriptionDto;
 import com.api.lawyer.dto.PushDto;
 import com.api.lawyer.filestore.FileStore;
 import com.api.lawyer.model.Appeal;
@@ -357,10 +358,10 @@ public class UserController {
     }
 
     @PostMapping("/editdescription")
-    public void editDescription(@RequestParam Integer userId, @RequestParam String description) {
-        Optional<User> client = userRepository.findUserById(userId);
+    public void editDescription(@RequestBody EditDescriptionDto editDescriptionDto) {
+        Optional<User> client = userRepository.findUserById(editDescriptionDto.getUserId());
         client.ifPresentOrElse(it -> {
-            it.setDescription(description);
+            it.setDescription(editDescriptionDto.getDescription());
             userRepository.save(it);
         }, () -> {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
