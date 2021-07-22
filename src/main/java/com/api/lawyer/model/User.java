@@ -28,6 +28,8 @@ public class User {
     private String tokenDevice;
     private Integer Complaint;
     private String photobase64;
+    private Boolean isAnonymus;
+    private String description;
     
     public User() {}
     
@@ -38,6 +40,7 @@ public class User {
         this.password = registrationDto.getPassword();
         this.role = registrationDto.getRole();
         this.averageRate = 0.0;
+        this.isAnonymus = registrationDto.getAnonymus();
     }
 
     public void setDateCreated(Timestamp dateCreated) {
@@ -142,5 +145,21 @@ public class User {
 
     public void setPhotobase64(String photobase64) {
         this.photobase64 = photobase64;
+    }
+
+    public Boolean getAnonymus() {
+        return isAnonymus;
+    }
+
+    public void setAnonymus(Boolean anonymus) {
+        isAnonymus = anonymus;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

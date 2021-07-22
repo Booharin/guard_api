@@ -9,6 +9,7 @@ public class RegistrationDto {
     private String password;
     private String city;
     private String role;
+    private Boolean isAnonymus;
 
     public String getFirstName() {
         return firstName;
@@ -56,5 +57,13 @@ public class RegistrationDto {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public Boolean getAnonymus() {
+        return isAnonymus;
+    }
+
+    public void setAnonymus(Boolean anonymus) {
+        isAnonymus = anonymus;
     }
 }

@@ -87,6 +87,7 @@ public class CommonOperationsController {
         newUser.setEmail("email"+unicIdentify+"@email.ru");
         newUser.setPassword("Password"+unicIdentify);
         newUser.setRole("ROLE_CLIENT");
+        newUser.setAnonymus(true);
 
         return registerNewUser(newUser);
     }
