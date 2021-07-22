@@ -355,4 +355,15 @@ public class UserController {
         } else
             throw new IllegalStateException("User not found");
     }
+
+    @PostMapping("/editdescription")
+    public void editDescription(@RequestParam Integer userId, @RequestParam String description) {
+        Optional<User> client = userRepository.findUserById(userId);
+        client.ifPresentOrElse(it -> {
+            it.setDescription(description);
+            userRepository.save(it);
+        }, () -> {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
+        });
+    }
 }
