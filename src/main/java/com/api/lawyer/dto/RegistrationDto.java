@@ -59,11 +59,11 @@ public class RegistrationDto {
         this.role = role;
     }
 
-    public Boolean getAnonymus() {
+    public Boolean getIsAnonymus() {
         return isAnonymus;
     }
 
-    public void setAnonymus(Boolean anonymus) {
-        isAnonymus = anonymus;
+    public void setIsAnonymus(Boolean isAnonymus) {
+        this.isAnonymus = isAnonymus;
     }
 }

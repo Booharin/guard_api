@@ -64,9 +64,10 @@ public class ClientController {
             it.setLastName(profile.getLastName());
             it.setPhoneNumber(profile.getPhoneNumber());
             it.setPhoto(profile.getPhoto());
-            it.setAnonymus(profile.getAnonymus());
+            it.setIsAnonymus(profile.getIsAnonymus());
             List<UserCity> userCityList = userCityRepository.findAllByUserId(it.getId());
-            userCityRepository.deleteAll(userCityList);
+            if (userCityList.size()>0)
+                userCityRepository.deleteAll(userCityList);
             for(Integer cityCode:  profile.getCityCode()) {
                 UserCity us = new UserCity(it.getId(), cityCode);
                 userCityRepository.save(us);

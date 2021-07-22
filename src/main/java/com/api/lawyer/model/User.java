@@ -40,7 +40,7 @@ public class User {
         this.password = registrationDto.getPassword();
         this.role = registrationDto.getRole();
         this.averageRate = 0.0;
-        this.isAnonymus = registrationDto.getAnonymus();
+        this.isAnonymus = registrationDto.getIsAnonymus();
     }
 
     public void setDateCreated(Timestamp dateCreated) {
@@ -147,12 +147,12 @@ public class User {
         this.photobase64 = photobase64;
     }
 
-    public Boolean getAnonymus() {
+    public Boolean getIsAnonymus() {
         return isAnonymus;
     }
 
-    public void setAnonymus(Boolean anonymus) {
-        isAnonymus = anonymus;
+    public void setIsAnonymus(Boolean isAnonymus) {
+        this.isAnonymus = isAnonymus;
     }
 
     public String getDescription() {

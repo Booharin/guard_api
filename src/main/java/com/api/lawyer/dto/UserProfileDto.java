@@ -38,7 +38,7 @@ public class UserProfileDto {
         this.averageRate = user.getAverageRate();
         this.dateCreated = user.getDateCreated();
         this.complaint = user.getComplaint();
-        this.isAnonymus = user.getAnonymus();
+        this.isAnonymus = user.getIsAnonymus();
         this.description = user.getDescription();
     }
     
@@ -156,11 +156,11 @@ public class UserProfileDto {
         this.complaint = complaint;
     }
 
-    public Boolean getAnonymus() {
+    public Boolean getIsAnonymus() {
         return isAnonymus;
     }
 
-    public void setAnonymus(Boolean anonymus) {
-        isAnonymus = anonymus;
+    public void setIsAnonymus(Boolean isAnonymus) {
+        this.isAnonymus = isAnonymus;
     }
 }
