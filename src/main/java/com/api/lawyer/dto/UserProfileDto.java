@@ -163,4 +163,12 @@ public class UserProfileDto {
     public void setIsAnonymus(Boolean isAnonymus) {
         this.isAnonymus = isAnonymus;
     }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
