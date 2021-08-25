@@ -2,6 +2,7 @@ package com.api.lawyer.controller;
 
 import com.api.lawyer.bucket.BucketName;
 import com.api.lawyer.dto.ChatMessageDto;
+import com.api.lawyer.dto.EditDescriptionDto;
 import com.api.lawyer.dto.PushDto;
 import com.api.lawyer.filestore.FileStore;
 import com.api.lawyer.model.Appeal;
@@ -323,7 +324,12 @@ public class UserController {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            userRepository.delete(user);
+
+            List<ChatMessage> listChatMessage = chatMessageRepository.findAllBySenderId(user.getId());
+            for (ChatMessage item: listChatMessage)
+            {
+                chatMessageRepository.delete(item);
+            }
 
             List<Appeal> listAppeal = appealCrudRepository.findAllByClientId(user.getId());
             for (Appeal item: listAppeal) {
@@ -342,16 +348,23 @@ public class UserController {
                 chatRoomRepository.delete(item);
             }
 
-            List<ChatMessage> listChatMessage = chatMessageRepository.findAllBySenderId(user.getId());
-            for (ChatMessage item: listChatMessage)
-            {
-                chatMessageRepository.delete(item);
-            }
+            userRepository.delete(user);
 
             Map<Object, Object> response = new HashMap<>();
             response.put("result", "OK");
             return ResponseEntity.ok(response);
         } else
             throw new IllegalStateException("User not found");
+    }
+
+    @PostMapping("/editdescription")
+    public void editDescription(@RequestBody EditDescriptionDto editDescriptionDto) {
+        Optional<User> client = userRepository.findUserById(editDescriptionDto.getUserId());
+        client.ifPresentOrElse(it -> {
+            it.setDescription(editDescriptionDto.getDescription());
+            userRepository.save(it);
+        }, () -> {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
+        });
     }
 }

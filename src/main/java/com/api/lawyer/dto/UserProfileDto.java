@@ -24,6 +24,8 @@ public class UserProfileDto {
     private List<Integer> cityCode;
     private List<Integer> countryCode;
     private Integer complaint;
+    private Boolean isAnonymus;
+    private String description;
     
     public UserProfileDto(User user){
         this.id = user.getId();
@@ -36,6 +38,8 @@ public class UserProfileDto {
         this.averageRate = user.getAverageRate();
         this.dateCreated = user.getDateCreated();
         this.complaint = user.getComplaint();
+        this.isAnonymus = user.getIsAnonymus();
+        this.description = user.getDescription();
     }
     
     public UserProfileDto() {}
@@ -150,5 +154,21 @@ public class UserProfileDto {
 
     public void setComplaint(Integer complaint) {
         this.complaint = complaint;
+    }
+
+    public Boolean getIsAnonymus() {
+        return isAnonymus;
+    }
+
+    public void setIsAnonymus(Boolean isAnonymus) {
+        this.isAnonymus = isAnonymus;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

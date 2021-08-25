@@ -86,8 +86,8 @@ var list = function() {
             let surName = row.insertCell(2);
             let email = row.insertCell(3);
             let phone = row.insertCell(4);
-            let cityCode = row.insertCell(5);
-            let countryCode = row.insertCell(6);
+            let countryCode = row.insertCell(5);
+            let cityCode = row.insertCell(6);
             let rating = row.insertCell(7);
             let actions = row.insertCell(8);
 
