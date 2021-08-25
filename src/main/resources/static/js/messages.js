@@ -17,7 +17,7 @@ $( document ).ready(function() {
      data: {},
      success: function (data) {
         data.messages.forEach((item) => {
-          $(".body-table").append("<tr><td>"+item.chatId+"</td><td>"+item.dateCreated+"</td><td>"+item.senderName+"</td><td>"+item.content+"</td></tr>");
+          $(".body-table").append("<tr><td>"+item.chatId+"</td><td>"+item.dateCreated.substring(0,19)+"</td><td>"+item.senderName+"</td><td>"+item.senderId+"</td><td>"+item.content+"</td></tr>");
         })
      },
      error: function () {
