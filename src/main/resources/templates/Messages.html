@@ -47,17 +47,25 @@
   <div class="messages">
     <h1>Просмотр сообщений</h1>
     <div>
-      Период с <input type="date" name="datefrom" id="datefrom"> по <input type="date" name="dateto" id="dateto">
-      <button id="searchMessage">Искать</button>
+      <form action="#" id="formsearch">
+      Период с <input type="date" name="fromdate" id="fromdate" required="required"> по
+        <input type="date" name="todate" id="todate" required="required">
+      <input type="submit" id="searchMessage" value="Искать">
+      </form>
     </div>
     <div class="messages">
       <table id="messageTable">
-        <tr class="table-titles">
-          <th class="table-title50">ИД Чата</th>
-          <th class="table-title50">Дата сообщения</th>
-          <th class="table-title50">От кого</th>
-          <th class="table-title100">Текст сообщения</th>
-        </tr>
+        <thead>
+          <tr class="table-titles">
+            <th class="table-title50">ИД Чата</th>
+            <th class="table-title50">Дата сообщения</th>
+            <th class="table-title50">От кого</th>
+            <th class="table-title100">Текст сообщения</th>
+          </tr>
+        </thead>
+        <tbody class="body-table">
+
+        </tbody>
       </table>
     </div>
   </div>

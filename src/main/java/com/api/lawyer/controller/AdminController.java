@@ -155,8 +155,8 @@ public class AdminController {
     }
 
     @GetMapping("/messages")
-    public Map<String, List<ChatMessage>> messages(@RequestParam @DateTimeFormat(pattern = "dd.MM.yyyy") Date fromdate,
-                                                   @RequestParam @DateTimeFormat(pattern = "dd.MM.yyyy") Date todate) {
+    public Map<String, List<ChatMessage>> messages(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date fromdate,
+                                                   @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date todate) {
         List<ChatMessage> messages = chatMessageRepository.findAllByDateCreatedBetweenOrderByChatIdAscDateCreatedAsc(new Timestamp(fromdate.getTime()),new Timestamp(todate.getTime()));
 
         Map<String, List<ChatMessage>> resultMap = new HashMap<>();
