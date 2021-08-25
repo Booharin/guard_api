@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,4 +22,5 @@ public interface ChatMessageRepository extends CrudRepository<ChatMessage, Strin
     List<ChatMessage> findNotMyMessagesByChatId(Integer chatId, Integer userId);
 
     List<ChatMessage> findAllBySenderId(Integer senderId);
+    List<ChatMessage> findAllByDateCreatedBetweenOrderByChatIdAscDateCreatedAsc(Timestamp fromdate, Timestamp todate);
 }

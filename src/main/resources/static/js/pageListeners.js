@@ -1,12 +1,14 @@
 var lawyersHref = document.getElementById("hrefLawyers")
 var clientsHref = document.getElementById("hrefClients")
 var directionsHref = document.getElementById("hrefDirections")
+var messagesHref = document.getElementById("hrefMessages")
 var personalHref = document.getElementById("hrefPersonalCabinet")
 
 
 lawyersHref.addEventListener('click', function() {getPage(URL + "admin/Lawyers")})
 clientsHref.addEventListener('click', function() {getPage(URL + "admin/Clients")})
 directionsHref.addEventListener('click', function() {getPage(URL + "admin/Directions")})
+messagesHref.addEventListener('click', function() {getPage(URL + "admin/Messages")})
 personalHref.addEventListener('click', function() {getPage(URL + "admin/PersonalCabinet")})
 
 

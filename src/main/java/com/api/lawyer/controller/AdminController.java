@@ -3,9 +3,11 @@ package com.api.lawyer.controller;
 import com.api.lawyer.dto.AdminDto;
 import com.api.lawyer.dto.UserProfileDto;
 import com.api.lawyer.model.*;
+import com.api.lawyer.model.websocket.ChatMessage;
 import com.api.lawyer.repository.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -32,16 +34,20 @@ public class AdminController {
     
     private final UserCityRepository userCityRepository;
 
+    private final ChatMessageRepository chatMessageRepository;
+
     public AdminController(UserRepository userRepository,
                            CountryRepository countryRepository,
                            CityRepository cityRepository,
                            UserCityRepository userCityRepository,
-                           AdminRepository adminRepository) {
+                           AdminRepository adminRepository,
+                           ChatMessageRepository chatMessageRepository) {
         this.userRepository = userRepository;
         this.countryRepository = countryRepository;
         this.cityRepository = cityRepository;
         this.userCityRepository = userCityRepository;
         this.adminRepository = adminRepository;
+        this.chatMessageRepository = chatMessageRepository;
     }
     
     @GetMapping("/Directions")
@@ -62,6 +68,11 @@ public class AdminController {
     @GetMapping("/Lawyers")
     public ModelAndView lawyers() {
         return createModel("Lawyers");
+    }
+
+    @GetMapping("/Messages")
+    public ModelAndView messages() {
+        return createModel("Messages");
     }
 
     @GetMapping("/index")
@@ -140,6 +151,16 @@ public class AdminController {
         });
         Map<String, List<UserProfileDto>> resultMap = new HashMap<>();
         resultMap.put("clients", clients);
+        return resultMap;
+    }
+
+    @GetMapping("/messages")
+    public Map<String, List<ChatMessage>> messages(@RequestParam @DateTimeFormat(pattern = "dd.MM.yyyy") Date fromdate,
+                                                   @RequestParam @DateTimeFormat(pattern = "dd.MM.yyyy") Date todate) {
+        List<ChatMessage> messages = chatMessageRepository.findAllByDateCreatedBetweenOrderByChatIdAscDateCreatedAsc(new Timestamp(fromdate.getTime()),new Timestamp(todate.getTime()));
+
+        Map<String, List<ChatMessage>> resultMap = new HashMap<>();
+        resultMap.put("messages", messages);
         return resultMap;
     }
 
