@@ -7,6 +7,7 @@ import com.api.lawyer.repository.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -69,6 +70,25 @@ public class LawyerController {
             }
             userRepository.save(it);
         }, () -> {throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lawyer not found");});
+    }
+
+    @PostMapping("/setReceiptData")
+    public ResponseEntity setReceiptData(@RequestParam Integer userId, @RequestParam String receiptData) {
+        if (receiptData == null || receiptData.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Receipt data is empty");
+        }
+        Optional<User> userData = userRepository.findById(userId);
+        if (userData.isPresent()) {
+            User user = userData.get();
+            if (!user.getRole().equals("ROLE_LAWYER")) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not Lawyer");
+            }
+            user.setReceiptData(receiptData);
+            userRepository.save(user);
+            return new ResponseEntity(HttpStatus.OK);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lawyer not found");
+        }
     }
     
     @GetMapping("/allappeal")

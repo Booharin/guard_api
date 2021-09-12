@@ -30,6 +30,7 @@ public class User {
     private String photobase64;
     private Boolean isAnonymus;
     private String description;
+    private String receiptData;
     
     public User() {}
     
@@ -161,5 +162,13 @@ public class User {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getReceiptData() {
+        return receiptData;
+    }
+
+    public void setReceiptData(String receiptData) {
+        this.receiptData = receiptData;
     }
 }
