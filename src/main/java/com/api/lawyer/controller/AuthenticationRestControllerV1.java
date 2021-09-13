@@ -2,12 +2,15 @@ package com.api.lawyer.controller;
 
 import com.api.lawyer.dto.AuthenticationRequestByIdDto;
 import com.api.lawyer.dto.AuthenticationRequestDto;
-import com.api.lawyer.dto.ClientProfileDto;
 import com.api.lawyer.dto.UserProfileDto;
 import com.api.lawyer.model.*;
 import com.api.lawyer.repository.*;
 import com.api.lawyer.security.jwt.JwtTokenProvider;
 import com.api.lawyer.service.UserService;
+import com.api.lawyer.service.impl.ReceiptDataService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,6 +36,9 @@ public class AuthenticationRestControllerV1 {
     private final LawyerRepository lawyerRepository;
     private final UserCityRepository userCityRepository;
     private final UserRepository userRepository;
+
+    @Autowired
+    ReceiptDataService receiptDataService;
 
     @Autowired
     public AuthenticationRestControllerV1(AuthenticationManager authenticationManager,
@@ -100,6 +106,38 @@ public class AuthenticationRestControllerV1 {
             Map<Object, Object> response = new HashMap<>();
             response.put("token", token);
             response.put("user", userProfileDto);
+
+            try {
+                if (user.getRole().equals("ROLE_LAWYER") && user.getReceiptData() != null && !user.getReceiptData().isEmpty()) {
+                    JSONObject resultValidate = receiptDataService.validateReceipt(user.getReceiptData());
+                    if (resultValidate.getInt("status") == 0 && resultValidate.get("receipt") != null) {
+                        JSONObject receipt = (JSONObject) resultValidate.get("receipt");
+                        if (receipt.get("in_app") != null) {
+                            JSONArray inAppList = (JSONArray) receipt.get("in_app");
+                            if (inAppList.length() > 0) {
+                                JSONObject inApp = (JSONObject) inAppList.get(0);
+
+                                if (inApp.getString("product_id") != null) {
+                                    userProfileDto.setSubscription_product_id(inApp.getString("product_id"));
+                                }
+
+                                if (inApp.getString("expires_date_ms") != null) {
+                                    userProfileDto.setSubscription_expires_date(inApp.getString("expires_date_ms"));
+                                    Date date = new Date(inApp.getLong("expires_date_ms"));
+                                    if (date.before(new Date())) {
+                                        userProfileDto.setSubscription_expired(true);
+                                    } else {
+                                        userProfileDto.setSubscription_expired(false);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username or password");

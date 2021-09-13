@@ -26,6 +26,10 @@ public class UserProfileDto {
     private Integer complaint;
     private Boolean isAnonymus;
     private String description;
+
+    private String subscription_product_id;
+    private String subscription_expires_date;
+    private Boolean subscription_expired;
     
     public UserProfileDto(User user){
         this.id = user.getId();
@@ -170,5 +174,29 @@ public class UserProfileDto {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getSubscription_product_id() {
+        return subscription_product_id;
+    }
+
+    public void setSubscription_product_id(String subscription_product_id) {
+        this.subscription_product_id = subscription_product_id;
+    }
+
+    public String getSubscription_expires_date() {
+        return subscription_expires_date;
+    }
+
+    public void setSubscription_expires_date(String subscription_expires_date) {
+        this.subscription_expires_date = subscription_expires_date;
+    }
+
+    public Boolean getSubscription_expired() {
+        return subscription_expired;
+    }
+
+    public void setSubscription_expired(Boolean subscription_expired) {
+        this.subscription_expired = subscription_expired;
     }
 }

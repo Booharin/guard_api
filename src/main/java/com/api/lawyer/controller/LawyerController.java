@@ -2,6 +2,7 @@ package com.api.lawyer.controller;
 
 import com.api.lawyer.dto.AppealDto;
 import com.api.lawyer.dto.LawyerProfileDto;
+import com.api.lawyer.dto.ReceiptDataDto;
 import com.api.lawyer.model.*;
 import com.api.lawyer.repository.*;
 import org.springframework.data.domain.PageRequest;
@@ -73,17 +74,20 @@ public class LawyerController {
     }
 
     @PostMapping("/setReceiptData")
-    public ResponseEntity setReceiptData(@RequestParam Integer userId, @RequestParam String receiptData) {
-        if (receiptData == null || receiptData.isEmpty()) {
+    public ResponseEntity setReceiptData(@RequestBody ReceiptDataDto data) {
+        if (data.getUserId() == null || data.getUserId() == 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "UserId is empty");
+        }
+        if (data.getReceiptData() == null || data.getReceiptData().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Receipt data is empty");
         }
-        Optional<User> userData = userRepository.findById(userId);
+        Optional<User> userData = userRepository.findById(data.getUserId());
         if (userData.isPresent()) {
             User user = userData.get();
             if (!user.getRole().equals("ROLE_LAWYER")) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not Lawyer");
             }
-            user.setReceiptData(receiptData);
+            user.setReceiptData(data.getReceiptData());
             userRepository.save(user);
             return new ResponseEntity(HttpStatus.OK);
         } else {
